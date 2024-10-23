@@ -13,8 +13,8 @@ namespace CleverAge\FlysystemProcessBundle\Task;
 use CleverAge\ProcessBundle\Model\AbstractConfigurableTask;
 use CleverAge\ProcessBundle\Model\IterableTaskInterface;
 use CleverAge\ProcessBundle\Model\ProcessState;
-use League\Flysystem\FilesystemInterface;
-use League\Flysystem\MountManager;
+use League\Flysystem\FilesystemException;
+use League\Flysystem\FilesystemOperator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -24,23 +24,9 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
 {
     use FilesystemOptionTrait;
 
-    /** @var  MountManager */
-    protected $mountManager;
+    protected ?array $fsContent = null;
 
-    /** @var array|null */
-    protected $fsContent = null;
-
-    /**
-     * ListContentTask constructor.
-     *
-     * @param MountManager $mountManager
-     */
-    public function __construct(MountManager $mountManager)
-    {
-        $this->mountManager = $mountManager;
-    }
-
-    protected function configureOptions(OptionsResolver $resolver)
+    protected function configureOptions(OptionsResolver $resolver): void
     {
         $this->configureFilesystemOption($resolver, 'filesystem');
 
@@ -49,11 +35,10 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
     }
 
     /**
-     * @param ProcessState $state
-     *
-     * @throws \Symfony\Component\OptionsResolver\Exception\ExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws FilesystemException
      */
-    public function execute(ProcessState $state)
+    public function execute(ProcessState $state): void
     {
         if ($this->fsContent === null || key($this->fsContent) === null) {
             $filesystem = $this->getFilesystem($state, 'filesystem');
@@ -70,7 +55,7 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
         }
     }
 
-    public function next(ProcessState $state)
+    public function next(ProcessState $state): bool
     {
         if (!is_array($this->fsContent)) {
             return false;
@@ -81,17 +66,13 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
         return key($this->fsContent) !== null;
     }
 
-
     /**
-     * @param FilesystemInterface $filesystem
-     * @param string|null         $pattern
-     *
-     * @return array
+     * @throws FilesystemException
      */
-    protected function getFilteredFilesystemContents(FilesystemInterface $filesystem, $pattern = null): array
+    protected function getFilteredFilesystemContents(FilesystemOperator $filesystem, string $pattern = null): array
     {
         $results = [];
-        foreach ($filesystem->listContents() as $item) {
+        foreach ($filesystem->listContents('') as $item) {
             if ($pattern === null || \preg_match($pattern, $item['path'])) {
                 $results[] = $item;
             }
@@ -99,13 +80,4 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
 
         return $results;
     }
-
-    /**
-     * @return MountManager
-     */
-    protected function getMountManager(): MountManager
-    {
-        return $this->mountManager;
-    }
-
 }

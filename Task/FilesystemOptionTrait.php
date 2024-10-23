@@ -11,7 +11,8 @@
 namespace CleverAge\FlysystemProcessBundle\Task;
 
 use CleverAge\ProcessBundle\Model\ProcessState;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemOperator;
 use League\Flysystem\MountManager;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,29 +22,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 trait FilesystemOptionTrait
 {
-    protected function configureFilesystemOption(OptionsResolver $resolver, $optionName)
+    protected function configureFilesystemOption(OptionsResolver $resolver, $optionName): void
     {
         $resolver->setRequired($optionName);
         $resolver->setAllowedTypes($optionName, 'string');
         $resolver->setNormalizer($optionName, function (Options $options, $value) {
-            return $this->getMountManager()->getFilesystem($value);
+            return new Filesystem($value);
         });
     }
 
-    protected function getFilesystem(ProcessState $state, $optionName): FilesystemInterface
+    protected function getFilesystem(ProcessState $state, $optionName): FilesystemOperator
     {
         return $this->getOption($state, $optionName);
     }
 
-    abstract protected function getMountManager(): MountManager;
-
     /**
-     * @see \CleverAge\ProcessBundle\Model\AbstractConfigurableTask::getOption
-     *
-     * @param ProcessState $state
-     * @param string             $code
-     *
-     * @return mixed
+     * @throws \InvalidArgumentException
      */
-    abstract protected function getOption(ProcessState $state, $code);
+    abstract protected function getOption(ProcessState $state, string $code): mixed;
 }
