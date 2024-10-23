@@ -10,6 +10,7 @@ v2.0
 
 * [#3](https://github.com/cleverage/flysystem-process-bundle/issues/3) Add Makefile & .docker for local standalone usage
 * [#3](https://github.com/cleverage/flysystem-process-bundle/issues/3) Add rector, phpstan & php-cs-fixer configurations & apply it
+* [#4](https://github.com/cleverage/flysystem-process-bundle/issues/4) Remove `sidus/base-bundle` dependency
 
 ### Fixes
 
