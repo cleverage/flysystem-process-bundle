@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the CleverAge/ProcessBundle package.
+ * This file is part of the CleverAge/FlysystemProcessBundle package.
  *
  * Copyright (c) Clever-Age
  *

@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * This file is part of the CleverAge/FlysystemProcessBundle package.
  *
- * Copyright (C) 2017-2019 Clever-Age
+ * Copyright (c) Clever-Age
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Copy (or move) file from one filesystem to another, using Flysystem
- * Either get files using a file regexp, or take files from input
+ * Either get files using a file regexp, or take files from input.
  */
 class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInterface
 {
@@ -75,8 +78,6 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
     }
 
     /**
-     * @param ProcessState $state
-     *
      * @throws \UnexpectedValueException
      * @throws \InvalidArgumentException
      * @throws FilesystemException
@@ -87,7 +88,7 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
         if ($filePattern) {
             foreach ($this->sourceFS->listContents('/') as $file) {
                 if ('file' === $file['type']
-                    && preg_match($filePattern, $file['path'])
+                    && preg_match($filePattern, (string) $file['path'])
                     && !\in_array($file['path'], $this->matchingFiles, true)) {
                     $this->matchingFiles[] = $file['path'];
                 }
@@ -131,7 +132,7 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
         }
 
         if ($removeSource) {
-            $this->sourceFS->delete(sprintf('%s://%s', $prefixFrom, $filename));
+            $this->sourceFS->delete(\sprintf('%s://%s', $prefixFrom, $filename));
         }
 
         return $result ? $filename : null;

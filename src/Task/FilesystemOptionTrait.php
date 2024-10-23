@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * This file is part of the CleverAge/FlysystemProcessBundle package.
  *
- * Copyright (C) 2017-2019 Clever-Age
+ * Copyright (c) Clever-Age
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,20 +20,18 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Tools to use filesystem inside task configurations
+ * Tools to use filesystem inside task configurations.
  */
 trait FilesystemOptionTrait
 {
-    protected function configureFilesystemOption(OptionsResolver $resolver, $optionName): void
+    protected function configureFilesystemOption(OptionsResolver $resolver, string|array $optionName): void
     {
         $resolver->setRequired($optionName);
         $resolver->setAllowedTypes($optionName, 'string');
-        $resolver->setNormalizer($optionName, function (Options $options, $value) {
-            return new Filesystem($value);
-        });
+        $resolver->setNormalizer($optionName, fn (Options $options, $value) => new Filesystem($value));
     }
 
-    protected function getFilesystem(ProcessState $state, $optionName): FilesystemOperator
+    protected function getFilesystem(ProcessState $state, string $optionName): FilesystemOperator
     {
         return $this->getOption($state, $optionName);
     }

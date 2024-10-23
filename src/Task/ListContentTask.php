@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
-/**
+<?php
+
+declare(strict_types=1);
+
+/*
  * This file is part of the CleverAge/FlysystemProcessBundle package.
  *
- * Copyright (C) 2017-2019 Clever-Age
+ * Copyright (c) Clever-Age
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,7 +21,7 @@ use League\Flysystem\FilesystemOperator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Iterate over the content of a filesystem
+ * Iterate over the content of a filesystem.
  */
 class ListContentTask extends AbstractConfigurableTask implements IterableTaskInterface
 {
@@ -40,14 +43,14 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
      */
     public function execute(ProcessState $state): void
     {
-        if ($this->fsContent === null || key($this->fsContent) === null) {
+        if (null === $this->fsContent || null === key($this->fsContent)) {
             $filesystem = $this->getFilesystem($state, 'filesystem');
             $pattern = $this->getOption($state, 'file_pattern');
 
             $this->fsContent = $this->getFilteredFilesystemContents($filesystem, $pattern);
         }
 
-        if (key($this->fsContent) === null) {
+        if (null === key($this->fsContent)) {
             $state->setSkipped(true);
             $this->fsContent = null;
         } else {
@@ -57,23 +60,23 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
 
     public function next(ProcessState $state): bool
     {
-        if (!is_array($this->fsContent)) {
+        if (!\is_array($this->fsContent)) {
             return false;
         }
 
         next($this->fsContent);
 
-        return key($this->fsContent) !== null;
+        return null !== key($this->fsContent);
     }
 
     /**
      * @throws FilesystemException
      */
-    protected function getFilteredFilesystemContents(FilesystemOperator $filesystem, string $pattern = null): array
+    protected function getFilteredFilesystemContents(FilesystemOperator $filesystem, ?string $pattern = null): array
     {
         $results = [];
         foreach ($filesystem->listContents('') as $item) {
-            if ($pattern === null || \preg_match($pattern, $item['path'])) {
+            if (null === $pattern || preg_match($pattern, (string) $item['path'])) {
                 $results[] = $item;
             }
         }
