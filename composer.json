@@ -38,8 +38,9 @@
         }
     },
     "require": {
-        "cleverage/process-bundle": "3.*|dev-v3.0-dev",
-        "oneup/flysystem-bundle": ">1.0,<4.0",
+        "php": ">=8.1",
+        "cleverage/process-bundle": "dev-prepare-release",
+        "league/flysystem-bundle": "^3.0",
         "sidus/base-bundle": "~1.0"
     },
     "require-dev": {
