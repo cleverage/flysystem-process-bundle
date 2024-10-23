@@ -34,7 +34,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "CleverAge\\FlysystemProcessBundle\\": ""
+            "CleverAge\\FlysystemProcessBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CleverAge\\FlysystemProcessBundle\\Tests\\": "tests/"
         }
     },
     "require": {

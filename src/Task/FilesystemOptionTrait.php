@@ -13,7 +13,6 @@ namespace CleverAge\FlysystemProcessBundle\Task;
 use CleverAge\ProcessBundle\Model\ProcessState;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
-use League\Flysystem\MountManager;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
