@@ -5,6 +5,8 @@ v2.0
 
 * [#5](https://github.com/cleverage/flysystem-process-bundle/issues/5) Replace "oneup/flysystem-bundle": ">1.0,<4.0" by "league/flysystem-bundle": "^3.0"
 * [#5](https://github.com/cleverage/flysystem-process-bundle/issues/5) Update Tasks for "league/flysystem-bundle": "^3.0"
+* [#6](https://github.com/cleverage/flysystem-process-bundle/issues/6) Update services according to Symfony best practices. Services should not use autowiring or autoconfiguration. Instead, all services should be defined explicitly.
+  Services must be prefixed with the bundle alias instead of using fully qualified class names => `cleverage_flysystem_process`
 
 ### Changes
 

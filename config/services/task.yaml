@@ -1,0 +1,16 @@
+services:
+    _defaults:
+        public: false
+        tags:
+            - { name: monolog.logger, channel: cleverage_process_task }
+
+    cleverage_flysystem_process.task.file_fetch:
+        class: CleverAge\FlysystemProcessBundle\Task\FileFetch
+
+    cleverage_flysystem_process.task.list_content:
+        class: CleverAge\FlysystemProcessBundle\Task\ListContentTask
+
+    cleverage_flysystem_process.task.remove_file:
+        class: CleverAge\FlysystemProcessBundle\Task\RemoveFileTask
+        arguments:
+            - '@monolog.logger'
