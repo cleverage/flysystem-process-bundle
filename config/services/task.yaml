@@ -5,7 +5,7 @@ services:
             - { name: monolog.logger, channel: cleverage_process_task }
 
     cleverage_flysystem_process.task.file_fetch:
-        class: CleverAge\FlysystemProcessBundle\Task\FileFetch
+        class: CleverAge\FlysystemProcessBundle\Task\FileFetchTask
 
     cleverage_flysystem_process.task.list_content:
         class: CleverAge\FlysystemProcessBundle\Task\ListContentTask
