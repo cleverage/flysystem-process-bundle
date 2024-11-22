@@ -6,11 +6,17 @@ services:
 
     cleverage_flysystem_process.task.file_fetch:
         class: CleverAge\FlysystemProcessBundle\Task\FileFetchTask
+    CleverAge\FlysystemProcessBundle\Task\FileFetchTask:
+        alias: cleverage_flysystem_process.task.file_fetch
 
     cleverage_flysystem_process.task.list_content:
         class: CleverAge\FlysystemProcessBundle\Task\ListContentTask
+    CleverAge\FlysystemProcessBundle\Task\ListContentTask:
+        alias: cleverage_flysystem_process.task.list_content
 
     cleverage_flysystem_process.task.remove_file:
         class: CleverAge\FlysystemProcessBundle\Task\RemoveFileTask
         arguments:
             - '@monolog.logger'
+    CleverAge\FlysystemProcessBundle\Task\RemoveFileTask:
+        alias: cleverage_flysystem_process.task.remove_file
