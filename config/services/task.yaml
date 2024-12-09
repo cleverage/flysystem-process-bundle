@@ -6,17 +6,23 @@ services:
 
     cleverage_flysystem_process.task.file_fetch:
         class: CleverAge\FlysystemProcessBundle\Task\FileFetchTask
+        arguments: [!tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }]
     CleverAge\FlysystemProcessBundle\Task\FileFetchTask:
         alias: cleverage_flysystem_process.task.file_fetch
+        public: true
 
     cleverage_flysystem_process.task.list_content:
         class: CleverAge\FlysystemProcessBundle\Task\ListContentTask
+        arguments: [!tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }]
     CleverAge\FlysystemProcessBundle\Task\ListContentTask:
         alias: cleverage_flysystem_process.task.list_content
+        public: true
 
     cleverage_flysystem_process.task.remove_file:
         class: CleverAge\FlysystemProcessBundle\Task\RemoveFileTask
         arguments:
-            - '@monolog.logger'
+            - '@logger'
+            - !tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }
     CleverAge\FlysystemProcessBundle\Task\RemoveFileTask:
         alias: cleverage_flysystem_process.task.remove_file
+        public: true

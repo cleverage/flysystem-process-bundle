@@ -19,6 +19,7 @@ use CleverAge\ProcessBundle\Model\ProcessState;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\FilesystemOperator;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -34,6 +35,13 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
     protected array $matchingFiles = [];
 
     /**
+     * @param MountManager|null $mountManager
+     */
+    public function __construct(protected readonly ServiceLocator $storages)
+    {
+    }
+
+    /**
      * @throws \InvalidArgumentException
      */
     public function initialize(ProcessState $state): void
@@ -41,8 +49,8 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
         // Configure options
         parent::initialize($state);
 
-        $this->sourceFS = new Filesystem($this->getOption($state, 'source_filesystem'));
-        $this->destinationFS = new Filesystem($this->getOption($state, 'destination_filesystem'));
+        $this->sourceFS = $this->storages->get($this->getOption($state, 'source_filesystem'));
+        $this->destinationFS = $this->storages->get($this->getOption($state, 'destination_filesystem'));
     }
 
     /**
@@ -74,7 +82,7 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
     {
         $this->findMatchingFiles($state);
 
-        return next($this->matchingFiles);
+        return false === next($this->matchingFiles) ? false : true;
     }
 
     /**
@@ -116,8 +124,6 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
      */
     protected function doFileCopy(ProcessState $state, string $filename, bool $removeSource): bool|string|null
     {
-        $prefixFrom = $this->getOption($state, 'source_filesystem');
-
         $buffer = $this->sourceFS->readStream($filename);
 
         try {
@@ -132,7 +138,7 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
         }
 
         if ($removeSource) {
-            $this->sourceFS->delete(\sprintf('%s://%s', $prefixFrom, $filename));
+            $this->sourceFS->delete($filename);
         }
 
         return $result ? $filename : null;

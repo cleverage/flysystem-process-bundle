@@ -17,6 +17,7 @@ use CleverAge\ProcessBundle\Model\AbstractConfigurableTask;
 use CleverAge\ProcessBundle\Model\ProcessState;
 use League\Flysystem\FilesystemException;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -24,20 +25,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class RemoveFileTask extends AbstractConfigurableTask
 {
-    use FilesystemOptionTrait;
-
-    public function __construct(protected LoggerInterface $logger)
+    public function __construct(protected LoggerInterface $logger, protected readonly ServiceLocator $storages)
     {
     }
 
     protected function configureOptions(OptionsResolver $resolver): void
     {
-        $this->configureFilesystemOption($resolver, 'filesystem');
+        $resolver->setRequired('filesystem');
+        $resolver->setAllowedTypes('filesystem', 'string');
     }
 
     public function execute(ProcessState $state): void
     {
-        $filesystem = $this->getFilesystem($state, 'filesystem');
+        $filesystem = $this->storages->get($this->getOption($state, 'filesystem'));
         $filePath = $state->getInput();
 
         try {

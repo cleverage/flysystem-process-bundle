@@ -18,6 +18,8 @@ use CleverAge\ProcessBundle\Model\IterableTaskInterface;
 use CleverAge\ProcessBundle\Model\ProcessState;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\FilesystemOperator;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -25,14 +27,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ListContentTask extends AbstractConfigurableTask implements IterableTaskInterface
 {
-    use FilesystemOptionTrait;
-
     protected ?array $fsContent = null;
+
+    public function __construct(protected readonly ServiceLocator $storages)
+    {
+    }
+
 
     protected function configureOptions(OptionsResolver $resolver): void
     {
-        $this->configureFilesystemOption($resolver, 'filesystem');
-
+        $resolver->setRequired('filesystem');
+        $resolver->setAllowedTypes('filesystem', 'string');
         $resolver->setDefault('file_pattern', null);
         $resolver->setAllowedTypes('file_pattern', ['null', 'string']);
     }
@@ -44,7 +49,7 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
     public function execute(ProcessState $state): void
     {
         if (null === $this->fsContent || null === key($this->fsContent)) {
-            $filesystem = $this->getFilesystem($state, 'filesystem');
+            $filesystem = $this->storages->get($this->getOption($state, 'filesystem'));
             $pattern = $this->getOption($state, 'file_pattern');
 
             $this->fsContent = $this->getFilteredFilesystemContents($filesystem, $pattern);
