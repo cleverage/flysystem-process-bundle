@@ -6,7 +6,7 @@ Perform copy between 2 flysystems storage
 Task reference
 --------------
 
-* **Service**: [`CleverAge\FlysystemProcessBundle\Task\FileFetchTask`](../src/Task/RemoveFileTask.php)
+* **Service**: [`CleverAge\FlysystemProcessBundle\Task\FileFetchTask`](../src/Task/FileFetchTask.php)
 
 Accepted inputs
 ---------------
