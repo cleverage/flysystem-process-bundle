@@ -19,9 +19,24 @@ Remember to add the following line to config/bundles.php (not required if Symfon
 CleverAge\FlysystemProcessBundle\CleverAgeFlysystemProcessBundle::class => ['all' => true],
 ```
 
+Configure at least one flysytem/storage into `config/packages/flysytem.yaml`
+
+```yaml
+#config/packages/flysytem.yaml
+flysystem:
+  storages:
+    storage.source: # This is the identifier of flysytem/storage
+    adapter: 'local'
+    options:
+      directory: '%kernel.project_dir%/var/storage/source'
+```
+
+See https://github.com/thephpleague/flysystem-bundle?tab=readme-ov-file for more sample configuration (sftp, ftp, amazon s3 ...)
+
+
 ## Reference
 
 - Tasks
-  - [FileFetchTask]
-  - [ListContentTask]
-  - [RemoveFileTask]
+  - [FileFetchTask](01%20-%20FileFetchTask.md)
+  - [ListContentTask](02%20-ListContentTask.md)
+  - [RemoveFileTask](03%20-%20RemoveFileTask.md)
