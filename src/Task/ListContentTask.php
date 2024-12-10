@@ -18,7 +18,6 @@ use CleverAge\ProcessBundle\Model\IterableTaskInterface;
 use CleverAge\ProcessBundle\Model\ProcessState;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\FilesystemOperator;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,10 +28,12 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
 {
     protected ?array $fsContent = null;
 
+    /**
+     * @param ServiceLocator<FilesystemOperator> $storages
+     */
     public function __construct(protected readonly ServiceLocator $storages)
     {
     }
-
 
     protected function configureOptions(OptionsResolver $resolver): void
     {

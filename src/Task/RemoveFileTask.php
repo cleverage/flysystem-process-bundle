@@ -16,6 +16,7 @@ namespace CleverAge\FlysystemProcessBundle\Task;
 use CleverAge\ProcessBundle\Model\AbstractConfigurableTask;
 use CleverAge\ProcessBundle\Model\ProcessState;
 use League\Flysystem\FilesystemException;
+use League\Flysystem\FilesystemOperator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,6 +26,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class RemoveFileTask extends AbstractConfigurableTask
 {
+    /**
+     * @param ServiceLocator<FilesystemOperator> $storages
+     */
     public function __construct(protected LoggerInterface $logger, protected readonly ServiceLocator $storages)
     {
     }

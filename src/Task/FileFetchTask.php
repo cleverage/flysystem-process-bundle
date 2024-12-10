@@ -35,7 +35,7 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
     protected array $matchingFiles = [];
 
     /**
-     * @param MountManager|null $mountManager
+     * @param ServiceLocator<FilesystemOperator> $storages
      */
     public function __construct(protected readonly ServiceLocator $storages)
     {
@@ -82,7 +82,7 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
     {
         $this->findMatchingFiles($state);
 
-        return false === next($this->matchingFiles) ? false : true;
+        return false !== next($this->matchingFiles);
     }
 
     /**
