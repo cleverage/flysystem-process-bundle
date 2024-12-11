@@ -37,6 +37,6 @@ See https://github.com/thephpleague/flysystem-bundle?tab=readme-ov-file for more
 ## Reference
 
 - Tasks
-  - [FileFetchTask](01-FileFetchTask.md)
-  - [ListContentTask](02-ListContentTask.md)
-  - [RemoveFileTask](03-RemoveFileTask.md)
+  - [FileFetchTask](reference/tasks/01-FileFetchTask.md)
+  - [ListContentTask](reference/tasks/02-ListContentTask.md)
+  - [RemoveFileTask](reference/tasks/03-RemoveFileTask.md)
