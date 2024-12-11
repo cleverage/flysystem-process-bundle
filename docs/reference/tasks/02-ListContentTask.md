@@ -28,15 +28,14 @@ Options
 
 Examples
 --------
-
+* Simple list task configuration from a filesystem
+    - see config/packages/flysystem.yaml to see configured flysystems/storages.
+    - list all .csv files from 'storage.source'
+    - output will be League\Flysystem\StorageAttributes representation of copied files
 ```yaml
 # Task configuration level
 code:
   service: '@CleverAge\FlysystemProcessBundle\Task\ListContentTask'
-  description: >
-    List .csv files from storage.source.
-    See config/packages/flysystem.yaml to see configured flysystem/storages.
-  outputs: get_file_path
   options:
     filesystem: 'storage.source'
     file_pattern: '/.csv$/'

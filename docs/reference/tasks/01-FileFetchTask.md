@@ -38,13 +38,15 @@ Options
 Examples
 --------
 
+* Simple fetch task configuration
+    - See config/packages/flysystem.yaml to see configured flysystems/storages.
+    - copy all .csv files from 'storage.source' to 'storage.destination'
+    - remove .csv from 'storage.source' after copy
+    - output will be filename of copied files
 ```yaml
 # Task configuration level
 code:
   service: '@CleverAge\FlysystemProcessBundle\Task\FileFetchTask'
-  description: >
-    Download all .csv files from storage.source to storage.destination.
-    See config/packages/flysystem.yaml to see configured flysystem/storages.
   options:
     source_filesystem: 'storage.source'
     destination_filesystem: 'storage.destination'
@@ -52,9 +54,13 @@ code:
     remove_source: true
 ```
 
+* Simple fetch process configuration to cipy a specific file from --input option via <br> ```bin/console cleverage:process:execute my_custom_process --input=foobar.csv -vv```
+    - See config/packages/flysystem.yaml to see configured flysystems/storages.
+    - copy input file from 'storage.source' to 'storage.destination'
+    - remove .csv from 'storage.source' after copy
+    - output will be filename of copied file
 ```yaml
 # Full process configuration to use input as filename with the following call
-# bin/console cleverage:process:execute my_custom_process --input=foobar.csv -vv
 my_custom_process:
   entry_point: copy_from_input
   tasks:

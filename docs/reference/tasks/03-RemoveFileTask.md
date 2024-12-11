@@ -31,9 +31,11 @@ Options
 
 Examples
 --------
-
+* Simple process to remove a file on 'storage.source' via <br>```bin/console cleverage:process:execute my_custom_process --input=foobar.csv -vv``` 
+    - see config/packages/flysystem.yaml to see configured flysystems/storages.
+    - remove file with name passed as input 
 ```yaml
-# bin/console cleverage:process:execute my_custom_process --input=foobar.csv -vv
+# 
 my_custom_process:
   entry_point: remove_from_input
   tasks:
