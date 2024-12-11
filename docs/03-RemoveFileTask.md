@@ -25,9 +25,9 @@ None
 Options
 -------
 
-| Code | Type |      Required      | Default | Description                    |
-| ---- |------|:------------------:|-|--------------------------------|
-| `filesystem` | `string` |**X**|| The source flysystem/storage. <br/>See config/packages/flysystem.yaml to see configured flysystem/storages. |
+| Code         |    Type    |  Required  |  Default  | Description                                                                                                 |
+|--------------|:----------:|:----------:|:---------:|-------------------------------------------------------------------------------------------------------------|
+| `filesystem` |  `string`  |   **X**    |           | The source flysystem/storage. <br/>See config/packages/flysystem.yaml to see configured flysystem/storages. |
 
 Examples
 --------

@@ -27,12 +27,12 @@ Filename of copied file.
 Options
 -------
 
-| Code | Type |      Required      | Default | Description                                                                                                                                   |
-| ---- |------|:------------------:|-|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| `source_filesystem` | `string` |**X**|| The source flysystem/storage.<br/>See config/packages/flysystem.yaml to see configured flysystem/storages.                                        |
-| `destination_filesystem` | `string` |**X**|| The source flysystem/storage.<br/>See config/packages/flysystem.yaml to see configured flysystem/storages.                                                                                                               |
-| `file_pattern` | `string` || null | The file_parttern used in preg_match to match into `source_filesystem` list of files. If not set try to use input as strict filename to match |
-| `remove_source`|`bool`|| false | If true delete source file after copy                                                                                                         |
+| Code                     |    Type    | Required  |  Default  | Description                                                                                                                                   |
+|--------------------------|:----------:|:---------:|:---------:|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| `source_filesystem`      |  `string`  |   **X**   |           | The source flysystem/storage.<br/>See config/packages/flysystem.yaml to see configured flysystem/storages.                                    |
+| `destination_filesystem` |  `string`  |   **X**   |           | The source flysystem/storage.<br/>See config/packages/flysystem.yaml to see configured flysystem/storages.                                    |
+| `file_pattern`           |  `string`  |           |   null    | The file_parttern used in preg_match to match into `source_filesystem` list of files. If not set try to use input as strict filename to match |
+| `remove_source`          |   `bool`   |           |   false   | If true delete source file after copy                                                                                                         |
 
 
 Examples

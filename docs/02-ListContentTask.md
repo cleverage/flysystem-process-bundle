@@ -21,10 +21,10 @@ League\Flysystem\StorageAttributes
 Options
 -------
 
-| Code | Type     |     Required      | Default | Description                                                    |
-| ---- |----------|:-----------------:|-|----------------------------------------------------------------|
-| `filesystem` | `string` |       **X**       || The source flysystem/storage.<br/>See config/packages/flysystem.yaml to see configured flysystem/storages.                                 |
-| `file_pattern` | `string` ||| he file_parttern used in preg_match to match into `filesystem` |
+| Code           |    Type    | Required  |  Default  | Description                                                                                                |
+|----------------|:----------:|:---------:|:---------:|------------------------------------------------------------------------------------------------------------|
+| `filesystem`   |  `string`  |   **X**   |           | The source flysystem/storage.<br/>See config/packages/flysystem.yaml to see configured flysystem/storages. |
+| `file_pattern` |  `string`  |           |           | The file_parttern used in preg_match to match into `filesystem`                                            |
 
 Examples
 --------
