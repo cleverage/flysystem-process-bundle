@@ -26,6 +26,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ListContentTask extends AbstractConfigurableTask implements IterableTaskInterface
 {
+    /**
+     * @var list<\League\Flysystem\StorageAttributes>|null
+     */
     protected ?array $fsContent = null;
 
     /**
@@ -50,10 +53,13 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
     public function execute(ProcessState $state): void
     {
         if (null === $this->fsContent || null === key($this->fsContent)) {
-            $filesystem = $this->storages->get($this->getOption($state, 'filesystem'));
-            $pattern = $this->getOption($state, 'file_pattern');
+            /** @var string $filesystemOption */
+            $filesystemOption = $this->getOption($state, 'filesystem');
+            $filesystem = $this->storages->get($filesystemOption);
+            /** @var ?string $patternOption */
+            $patternOption = $this->getOption($state, 'file_pattern');
 
-            $this->fsContent = $this->getFilteredFilesystemContents($filesystem, $pattern);
+            $this->fsContent = $this->getFilteredFilesystemContents($filesystem, $patternOption);
         }
 
         if (null === key($this->fsContent)) {
@@ -76,13 +82,15 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
     }
 
     /**
+     * @return list<\League\Flysystem\StorageAttributes>
+     *
      * @throws FilesystemException
      */
     protected function getFilteredFilesystemContents(FilesystemOperator $filesystem, ?string $pattern = null): array
     {
         $results = [];
         foreach ($filesystem->listContents('') as $item) {
-            if (null === $pattern || preg_match($pattern, (string) $item['path'])) {
+            if (null === $pattern || preg_match($pattern, $item->path())) {
                 $results[] = $item;
             }
         }

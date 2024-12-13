@@ -41,7 +41,10 @@ class RemoveFileTask extends AbstractConfigurableTask
 
     public function execute(ProcessState $state): void
     {
-        $filesystem = $this->storages->get($this->getOption($state, 'filesystem'));
+        /** @var string $filesystemOption */
+        $filesystemOption = $this->getOption($state, 'filesystem');
+        $filesystem = $this->storages->get($filesystemOption);
+        /** @var string $filePath */
         $filePath = $state->getInput();
 
         try {
