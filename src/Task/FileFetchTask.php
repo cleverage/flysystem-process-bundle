@@ -51,8 +51,12 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
         // Configure options
         parent::initialize($state);
 
-        $this->sourceFS = $this->storages->get($this->getOption($state, 'source_filesystem'));
-        $this->destinationFS = $this->storages->get($this->getOption($state, 'destination_filesystem'));
+        /** @var string $sourceFilesystemOption */
+        $sourceFilesystemOption = $this->getOption($state, 'source_filesystem');
+        $this->sourceFS = $this->storages->get($sourceFilesystemOption);
+        /** @var string $destinationFilesystemOption */
+        $destinationFilesystemOption = $this->getOption($state, 'destination_filesystem');
+        $this->destinationFS = $this->storages->get($destinationFilesystemOption);
     }
 
     /**
@@ -71,7 +75,9 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
             return;
         }
 
-        $this->doFileCopy($state, $file, $this->getOption($state, 'remove_source'));
+        /** @var bool $removeSourceOption */
+        $removeSourceOption = $this->getOption($state, 'remove_source');
+        $this->doFileCopy($state, $file, $removeSourceOption);
         $state->setOutput($file);
     }
 
@@ -94,16 +100,19 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
      */
     protected function findMatchingFiles(ProcessState $state): void
     {
+        /** @var ?string $filePattern */
         $filePattern = $this->getOption($state, 'file_pattern');
         if ($filePattern) {
             foreach ($this->sourceFS->listContents('/') as $file) {
-                if ('file' === $file['type']
-                    && preg_match($filePattern, (string) $file['path'])
-                    && !\in_array($file['path'], $this->matchingFiles, true)) {
-                    $this->matchingFiles[] = $file['path'];
+                if ('file' === $file->type()
+                    && preg_match($filePattern, $file->path())
+                    && !\in_array($file->path(), $this->matchingFiles, true)
+                ) {
+                    $this->matchingFiles[] = $file->path();
                 }
             }
         } else {
+            /** @var array<string>|string|null $input */
             $input = $state->getInput();
             if (!$input) {
                 throw new \UnexpectedValueException('No pattern neither input provided for the Task');
