@@ -26,6 +26,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ListContentTask extends AbstractConfigurableTask implements IterableTaskInterface
 {
+    /**
+     * @var list<\League\Flysystem\StorageAttributes>|null
+     */
     protected ?array $fsContent = null;
 
     /**
@@ -76,6 +79,8 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
     }
 
     /**
+     * @return list<\League\Flysystem\StorageAttributes>
+     *
      * @throws FilesystemException
      */
     protected function getFilteredFilesystemContents(FilesystemOperator $filesystem, ?string $pattern = null): array

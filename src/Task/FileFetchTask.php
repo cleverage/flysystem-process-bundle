@@ -16,7 +16,6 @@ namespace CleverAge\FlysystemProcessBundle\Task;
 use CleverAge\ProcessBundle\Model\AbstractConfigurableTask;
 use CleverAge\ProcessBundle\Model\IterableTaskInterface;
 use CleverAge\ProcessBundle\Model\ProcessState;
-use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\FilesystemOperator;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -32,6 +31,9 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
 
     protected FilesystemOperator $destinationFS;
 
+    /**
+     * @var array<int, string>
+     */
     protected array $matchingFiles = [];
 
     /**
