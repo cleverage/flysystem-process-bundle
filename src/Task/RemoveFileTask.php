@@ -22,10 +22,12 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Remove a file from a filesystem.
+ * Remove files from a filesystem.
  */
 class RemoveFileTask extends AbstractConfigurableTask
 {
+    private FilesystemOperator $filesystem;
+
     /**
      * @param ServiceLocator<FilesystemOperator> $storages
      */
@@ -37,18 +39,40 @@ class RemoveFileTask extends AbstractConfigurableTask
     {
         $resolver->setRequired('filesystem');
         $resolver->setAllowedTypes('filesystem', 'string');
+
+        $resolver->setDefault('file_pattern', null);
+        $resolver->setAllowedTypes('file_pattern', ['string', 'null']);
     }
 
     public function execute(ProcessState $state): void
     {
         /** @var string $filesystemOption */
         $filesystemOption = $this->getOption($state, 'filesystem');
-        $filesystem = $this->storages->get($filesystemOption);
-        /** @var string $filePath */
-        $filePath = $state->getInput();
+        $this->filesystem = $this->storages->get($filesystemOption);
 
+        /** @var ?string $filePattern */
+        $filePattern = $this->getOption($state, 'file_pattern');
+        if ($filePattern) {
+            foreach ($this->filesystem->listContents('/') as $file) {
+                if ('file' === $file->type() && preg_match($filePattern, $file->path())) {
+                    $this->deleteFile($file->path());
+                }
+            }
+        } else {
+            /** @var ?string $input */
+            $input = $state->getInput();
+            if (!$input) {
+                throw new \UnexpectedValueException('No pattern neither input provided for the Task');
+            }
+
+            $this->deleteFile($input);
+        }
+    }
+
+    private function deleteFile(string $filePath): void
+    {
         try {
-            $filesystem->delete($filePath);
+            $this->filesystem->delete($filePath);
             $result = true;
         } catch (FilesystemException) {
             $result = false;
