@@ -1,3 +1,10 @@
+v2.1
+------
+
+### Changes
+
+* [#14](https://github.com/cleverage/flysystem-process-bundle/issues/14) Update RemoveFileTask to work with file_pattern or input.
+
 v2.0
 ------
 
