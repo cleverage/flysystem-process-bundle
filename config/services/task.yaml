@@ -6,6 +6,7 @@ services:
 
     cleverage_flysystem_process.task.file_fetch:
         class: CleverAge\FlysystemProcessBundle\Task\FileFetchTask
+        shared: false
         arguments: [!tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }]
     CleverAge\FlysystemProcessBundle\Task\FileFetchTask:
         alias: cleverage_flysystem_process.task.file_fetch
@@ -13,6 +14,7 @@ services:
 
     cleverage_flysystem_process.task.list_content:
         class: CleverAge\FlysystemProcessBundle\Task\ListContentTask
+        shared: false
         arguments: [!tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }]
     CleverAge\FlysystemProcessBundle\Task\ListContentTask:
         alias: cleverage_flysystem_process.task.list_content
@@ -20,6 +22,7 @@ services:
 
     cleverage_flysystem_process.task.remove_file:
         class: CleverAge\FlysystemProcessBundle\Task\RemoveFileTask
+        shared: false
         arguments:
             - '@logger'
             - !tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }
