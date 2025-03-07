@@ -1,3 +1,10 @@
+v2.1.1
+------
+
+### Fixes
+
+* [#16](https://github.com/cleverage/flysystem-process-bundle/issues/16) Add missing shared: false on tasks
+
 v2.1
 ------
 
