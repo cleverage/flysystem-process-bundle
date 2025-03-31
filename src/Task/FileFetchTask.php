@@ -127,6 +127,9 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
                 $this->matchingFiles[] = $input;
             }
         }
+        if ([] === $this->matchingFiles && !$this->getOption($state, 'ignore_missing')) {
+            throw new \UnexpectedValueException('File(s) not found in source filesystem');
+        }
     }
 
     /**
@@ -166,5 +169,8 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
 
         $resolver->setDefault('remove_source', false);
         $resolver->setAllowedTypes('remove_source', 'boolean');
+
+        $resolver->setDefault('ignore_missing', true);
+        $resolver->setAllowedTypes('ignore_missing', 'boolean');
     }
 }
