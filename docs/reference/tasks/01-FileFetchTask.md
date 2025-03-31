@@ -27,12 +27,13 @@ Filename of copied file.
 Options
 -------
 
-| Code                     |    Type    | Required  |  Default  | Description                                                                                                                                  |
-|--------------------------|:----------:|:---------:|:---------:|----------------------------------------------------------------------------------------------------------------------------------------------|
-| `source_filesystem`      |  `string`  |   **X**   |           | The source flysystem/storage.<br/>See config/packages/flysystem.yaml to see configured flysystem/storages.                                   |
-| `destination_filesystem` |  `string`  |   **X**   |           | The source flysystem/storage.<br/>See config/packages/flysystem.yaml to see configured flysystem/storages.                                   |
-| `file_pattern`           |  `string`  |           |   null    | The file_pattern used in preg_match to match into `source_filesystem` list of files. If not set try to use input as strict filename to match |
-| `remove_source`          |   `bool`   |           |   false   | If true delete source file after copy                                                                                                        |
+| Code                     |   Type   | Required | Default | Description                                                                                                                                  |
+|--------------------------|:--------:|:--------:|:-------:|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `source_filesystem`      | `string` |  **X**   |         | The source flysystem/storage.<br/>See config/packages/flysystem.yaml to see configured flysystem/storages.                                   |
+| `destination_filesystem` | `string` |  **X**   |         | The source flysystem/storage.<br/>See config/packages/flysystem.yaml to see configured flysystem/storages.                                   |
+| `file_pattern`           | `string` |          |  null   | The file_pattern used in preg_match to match into `source_filesystem` list of files. If not set try to use input as strict filename to match |
+| `remove_source`          |  `bool`  |          |  false  | If true delete source file after copy                                                                                                        |
+| `ignore_missing`         |  `bool`  |          |  true   | Ignore property accessor errors for this source                                                                                              |          
 
 
 Examples
@@ -43,6 +44,7 @@ Examples
     - copy all .csv files from 'storage.source' to 'storage.destination'
     - remove .csv from 'storage.source' after copy
     - output will be filename of copied files
+    - throw Exception when file(s) not found
 ```yaml
 # Task configuration level
 code:
@@ -52,6 +54,7 @@ code:
     destination_filesystem: 'storage.destination'
     file_pattern: '/.csv$/'
     remove_source: true
+    ignore_missing: false
 ```
 
 * Simple fetch process configuration to cipy a specific file from --input option via <br> ```bin/console cleverage:process:execute my_custom_process --input=foobar.csv -vv```
