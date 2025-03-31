@@ -1,3 +1,10 @@
+v2.2
+------
+
+### Changes
+
+* [#18](https://github.com/cleverage/flysystem-process-bundle/issues/18) Add ignore_missing option on FileFetchTask that allow throwing Exception when file(s) not found.
+
 v2.1.1
 ------
 
