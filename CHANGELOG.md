@@ -1,3 +1,12 @@
+v3.0
+------
+
+### Changes
+* [#22](https://github.com/cleverage/flysystem-process-bundle/issues/22) Add support for PHP 8.5 Update phpunit/phpunit to version >10.0 Bump version to cleverage/process-bundle ^5.0
+
+### BC breaks
+* [#22](https://github.com/cleverage/flysystem-process-bundle/issues/22) Remove support for PHP 8.1
+
 v2.3
 ------
 
