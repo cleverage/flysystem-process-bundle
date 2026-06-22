@@ -46,6 +46,7 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
     /**
      * @throws \InvalidArgumentException
      */
+    #[\Override]
     public function initialize(ProcessState $state): void
     {
         // Configure options
