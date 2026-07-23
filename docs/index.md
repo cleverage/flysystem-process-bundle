@@ -40,3 +40,7 @@ See https://github.com/thephpleague/flysystem-bundle?tab=readme-ov-file for more
   - [FileFetchTask](reference/tasks/01-FileFetchTask.md)
   - [ListContentTask](reference/tasks/02-ListContentTask.md)
   - [RemoveFileTask](reference/tasks/03-RemoveFileTask.md)
+
+## Troubleshooting
+
+- [SFTP stale connection on long-running processes](troubleshooting.md) (`Got packet type` / `Connection closed prematurely`)
