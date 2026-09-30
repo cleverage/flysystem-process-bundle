@@ -1,6 +1,6 @@
 ## Prerequisite
 
-CleverAge/ProcessBundle must be [installed](https://github.com/cleverage/process-bundle/blob/main/docs/01-quick_start.md#installation.
+CleverAge/ProcessBundle must be [installed](https://github.com/cleverage/process-bundle/blob/main/docs/01-quick_start.md#installation).
 
 ## Installation
 
@@ -19,28 +19,54 @@ Remember to add the following line to config/bundles.php (not required if Symfon
 CleverAge\FlysystemProcessBundle\CleverAgeFlysystemProcessBundle::class => ['all' => true],
 ```
 
-Configure at least one flysytem/storage into `config/packages/flysytem.yaml`
+This bundle relies on [league/flysystem-bundle](https://github.com/thephpleague/flysystem-bundle), installed as a
+dependency: the bundle `League\FlysystemBundle\FlysystemBundle` must be enabled as well. Adapters other than `local`
+require their own package, e.g. `composer require league/flysystem-sftp-v3` for SFTP.
+
+## Configuration
+
+The tasks of this bundle work with the Flysystem **storages** configured in `config/packages/flysystem.yaml`: their
+`filesystem`, `source_filesystem` and `destination_filesystem` options take the name of a storage (the key under
+`flysystem.storages`). Configure at least one storage:
 
 ```yaml
-#config/packages/flysytem.yaml
+# config/packages/flysystem.yaml
 flysystem:
-  storages:
-    storage.source: # This is the identifier of flysytem/storage
-    adapter: 'local'
-    options:
-      directory: '%kernel.project_dir%/var/storage/source'
+    storages:
+        local.storage: # Name of the storage, used in the task options
+            adapter: 'local'
+            options:
+                directory: '%kernel.project_dir%/var/storage/local'
+
+        remote.storage:
+            adapter: 'sftp'
+            options:
+                host: '%env(string:SFTP_HOST)%'
+                port: 22
+                username: '%env(string:SFTP_USERNAME)%'
+                password: '%env(string:SFTP_PASSWORD)%'
+                root: '%env(string:SFTP_ROOT)%'
 ```
 
-See https://github.com/thephpleague/flysystem-bundle?tab=readme-ov-file for more sample configuration (sftp, ftp, amazon s3 ...)
+Paths used and returned by the tasks are relative to the root of the storage (`directory` or `root` option).
+Listings (`file_pattern` options, [ListContentTask](reference/tasks/list_content_task.md)) are not recursive: to work
+in a sub-directory, configure a dedicated storage whose root is this directory.
 
+See the [flysystem-bundle documentation](https://github.com/thephpleague/flysystem-bundle?tab=readme-ov-file)
+for the configuration of other adapters (FTP, Amazon S3, Azure, Google Cloud Storage...).
 
-## Reference
+## Documentation
 
-- Tasks
-  - [FileFetchTask](reference/tasks/01-FileFetchTask.md)
-  - [ListContentTask](reference/tasks/02-ListContentTask.md)
-  - [RemoveFileTask](reference/tasks/03-RemoveFileTask.md)
-
-## Troubleshooting
-
-- [SFTP stale connection on long-running processes](troubleshooting.md) (`Got packet type` / `Connection closed prematurely`)
+- Cookbooks
+    - [SFTP import](cookbooks/sftp_import.md)
+    - [SFTP export](cookbooks/sftp_export.md)
+    - [Remote cleanup](cookbooks/remote_cleanup.md)
+- Reference
+    - Tasks
+        - [FileFetchTask](reference/tasks/file_fetch_task.md)
+        - [ListContentTask](reference/tasks/list_content_task.md)
+        - [RemoveFileTask](reference/tasks/remove_file_task.md)
+- [Troubleshooting](troubleshooting.md)
+    - [SFTP stale connection on long-running processes](troubleshooting.md#sftp-long-running-process-fails-with-got-packet-type--connection-closed-prematurely)
+      (`Got packet type` / `Connection closed prematurely`)
+- [CleverAge/ProcessBundle documentation](https://github.com/cleverage/process-bundle/blob/main/docs/index.md)

@@ -4,8 +4,8 @@
 
 ### Symptom
 
-A long-running process that uses an SFTP storage (e.g. `FileFetchTask`, `ListContentTask`,
-`RemoveFileTask`) fails on a **later** task with one of:
+A long-running process that uses an SFTP storage (e.g. [FileFetchTask](reference/tasks/file_fetch_task.md),
+[ListContentTask](reference/tasks/list_content_task.md), [RemoveFileTask](reference/tasks/remove_file_task.md)) fails on a **later** task with one of:
 
 ```
 Expected NET_SFTP_HANDLE or NET_SFTP_STATUS. Got packet type: <n>
