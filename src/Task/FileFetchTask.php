@@ -141,22 +141,20 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
     {
         $buffer = $this->sourceFS->readStream($filename);
 
+        // A write failure is not caught: the task fails (the error strategy applies) and the source is kept
         try {
             $this->destinationFS->writeStream($filename, $buffer);
-            $result = true;
-        } catch (FilesystemException) {
-            $result = false;
-        }
-
-        if (\is_resource($buffer)) {
-            fclose($buffer);
+        } finally {
+            if (\is_resource($buffer)) {
+                fclose($buffer);
+            }
         }
 
         if ($removeSource) {
             $this->sourceFS->delete($filename);
         }
 
-        return $result ? $filename : null;
+        return $filename;
     }
 
     protected function configureOptions(OptionsResolver $resolver): void
