@@ -109,6 +109,8 @@ Notes
 * The file is written to `destination_filesystem` with the same path, overwriting any existing file. A file given as
   input that does not exist in `source_filesystem` throws a `League\Flysystem\UnableToReadFile` exception, whatever
   the value of `ignore_missing`.
+* A failure while writing to `destination_filesystem` throws a `League\Flysystem\FilesystemException` (e.g.
+  `UnableToWriteFile`): the task's `error_strategy` applies, and with `remove_source: true` the source file is kept.
 * To read a copied file with a core task (e.g.
   [InputCsvReaderTask](https://github.com/cleverage/process-bundle/blob/main/docs/reference/tasks/input_csv_reader_task.md)),
   prefix the output with the directory of the local destination storage (e.g. with the `base_path` option).
