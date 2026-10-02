@@ -1,6 +1,9 @@
 Latest
 ------
 
+v3.2
+------
+
 ### Changes
 * [#33](https://github.com/cleverage/flysystem-process-bundle/issues/33) Add missing tests: FileFetchTask, ListContentTask and RemoveFileTask on local storages, bundle and DI extension.
 
