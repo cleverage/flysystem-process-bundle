@@ -12,11 +12,10 @@ Accepted inputs
 ---------------
 
 * When `file_pattern` is set, the input is ignored (but the deletion is run again each time the task is executed).
-* Otherwise, `string`: path of the file to delete, relative to the root of the `filesystem` storage. An empty input
-  throws an `\UnexpectedValueException` (`No pattern neither input provided for the Task`). A list of paths is not
-  supported: iterate over it first (e.g. with
-  [InputIteratorTask](https://github.com/cleverage/process-bundle/blob/main/docs/reference/tasks/input_iterator_task.md)).
-  A `StorageAttributes` output of [ListContentTask](list_content_task.md) must be converted to its `path` first.
+* Otherwise, `string|array<string>`: path, or list of paths, of the file(s) to delete, relative to the root of the
+  `filesystem` storage. An empty input throws an `\UnexpectedValueException` (`No pattern neither input provided for
+  the Task`). A `StorageAttributes` output of [ListContentTask](list_content_task.md) must be converted to its `path`
+  first.
 
 Possible outputs
 ----------------
@@ -65,8 +64,8 @@ Notes
 * `file_pattern` is only tested on the files located at the root of the storage (the listing is not recursive and
   directories are ignored).
 * Deletion errors do not stop the process: each deleted file is logged with the `info` level (`Deleted input file`),
-  and a deletion failure (`League\Flysystem\FilesystemException`) is logged with the `warning` level, with the file
-  path in the log context. Deleting a file that does not exist is not an error for most adapters (e.g. `local`,
-  `sftp`): it is logged as deleted.
+  and a deletion failure (`League\Flysystem\FilesystemException`) is logged with the `warning` level
+  (`Failed to delete input file`), with the file path in the log context. A file given as input that does not exist
+  (or is a directory) is not deleted and is logged with the `warning` level (`Input file not found`).
 * The storage is resolved on each execution: an unknown storage name makes the task fail when it is executed.
 * See the [Remote cleanup](../../cookbooks/remote_cleanup.md) cookbook.

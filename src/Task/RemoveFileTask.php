@@ -52,26 +52,37 @@ class RemoveFileTask extends AbstractConfigurableTask
 
         /** @var ?string $filePattern */
         $filePattern = $this->getOption($state, 'file_pattern');
-        if ($filePattern) {
+        if (null !== $filePattern && '' !== $filePattern) {
             foreach ($this->filesystem->listContents('/') as $file) {
                 if ('file' === $file->type() && preg_match($filePattern, $file->path())) {
-                    $this->deleteFile($file->path());
+                    $this->deleteFile($file->path(), false);
                 }
             }
         } else {
-            /** @var ?string $input */
             $input = $state->getInput();
-            if (!$input) {
+            if (null === $input || '' === $input || [] === $input) {
                 throw new \UnexpectedValueException('No pattern neither input provided for the Task');
             }
 
-            $this->deleteFile($input);
+            /** @var list<string> $files */
+            $files = \is_array($input) ? array_values($input) : [$input];
+            foreach ($files as $file) {
+                $this->deleteFile($file, true);
+            }
         }
     }
 
-    private function deleteFile(string $filePath): void
+    /**
+     * @param bool $checkExists Most adapters (e.g. local, sftp) do not fail when deleting a missing file
+     */
+    private function deleteFile(string $filePath, bool $checkExists): void
     {
         try {
+            if ($checkExists && !$this->filesystem->fileExists($filePath)) {
+                $this->logger->warning('Input file not found', ['file' => $filePath]);
+
+                return;
+            }
             $this->filesystem->delete($filePath);
             $result = true;
         } catch (FilesystemException) {
@@ -81,7 +92,7 @@ class RemoveFileTask extends AbstractConfigurableTask
         if ($result) {
             $this->logger->info('Deleted input file', ['file' => $filePath]);
         } else {
-            $this->logger->warning('Failed to deleted input file', ['file' => $filePath]);
+            $this->logger->warning('Failed to delete input file', ['file' => $filePath]);
         }
     }
 }
