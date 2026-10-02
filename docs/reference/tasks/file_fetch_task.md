@@ -30,19 +30,19 @@ Possible outputs
 `string`: for each copied file, its path relative to the storage root (the same path is used in the
 `source_filesystem` and in the `destination_filesystem`).
 
-When no file matches `file_pattern` (and `ignore_missing` is `true`), or when every received file has already been
-copied during this process execution, no output is produced and the task is skipped.
+When no file matches `file_pattern`, or when no file given as input exists (and `ignore_missing` is `true`), no
+output is produced and the task is skipped.
 
 Options
 -------
 
-| Code                     | Type           | Required | Default | Description                                                                                                                                                                                                                                |
-|--------------------------|----------------|:--------:|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `source_filesystem`      | `string`       |  **X**   |         | Name of the Flysystem storage to read files from, as configured under `flysystem.storages` (see [configuration](../../index.md#configuration))                                                                                             |
-| `destination_filesystem` | `string`       |  **X**   |         | Name of the Flysystem storage to write files to, as configured under `flysystem.storages`                                                                                                                                                  |
-| `file_pattern`           | `string\|null` |          | `null`  | Regular expression (see [preg_match](https://www.php.net/manual/en/function.preg-match.php)) tested on the path of each file at the root of `source_filesystem`. If `null` (or empty), the file path(s) are taken from the input |
-| `remove_source`          | `bool`         |          | `false` | Delete the file from `source_filesystem` after the copy (move instead of copy)                                                                                                                                                             |
-| `ignore_missing`         | `bool`         |          | `true`  | Only used with `file_pattern`: if `false`, throw an `\UnexpectedValueException` (`File(s) not found in source filesystem`) when no file matches the pattern. If `true`, the task is skipped                                        |
+| Code                     | Type           | Required | Default | Description                                                                                                                                                                                                                                                       |
+|--------------------------|----------------|:--------:|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `source_filesystem`      | `string`       |  **X**   |         | Name of the Flysystem storage to read files from, as configured under `flysystem.storages` (see [configuration](../../index.md#configuration))                                                                                                                    |
+| `destination_filesystem` | `string`       |  **X**   |         | Name of the Flysystem storage to write files to, as configured under `flysystem.storages`                                                                                                                                                                         |
+| `file_pattern`           | `string\|null` |          | `null`  | Regular expression (see [preg_match](https://www.php.net/manual/en/function.preg-match.php)) tested on the path of each file at the root of `source_filesystem`. If `null` (or empty), the file path(s) are taken from the input                                  |
+| `remove_source`          | `bool`         |          | `false` | Delete the file from `source_filesystem` after the copy (move instead of copy)                                                                                                                                                                                    |
+| `ignore_missing`         | `bool`         |          | `true`  | If `false`, throw an `\UnexpectedValueException` when no file matches `file_pattern` (`File(s) not found in source filesystem`) or when a file given as input does not exist (`File <path> not found in source filesystem`). If `true`, missing files are skipped |
 
 Examples
 --------
@@ -101,14 +101,14 @@ Notes
 * `file_pattern` is only tested on the files located at the root of `source_filesystem` (the listing is not
   recursive and directories are ignored). The pattern is tested on the path relative to the storage root: to target
   a sub-directory, configure a dedicated storage whose root is this directory.
-* The source storage is listed again before each iteration: files added to the source during the iteration are also
-  copied. With an SFTP storage and long-running downstream tasks, see
-  [SFTP stale connection](../../troubleshooting.md).
-* A given file is copied only once per process execution: already copied paths are remembered, so receiving the same
-  path again (or a new input while using `file_pattern`) skips the task.
-* The file is written to `destination_filesystem` with the same path, overwriting any existing file. A file given as
-  input that does not exist in `source_filesystem` throws a `League\Flysystem\UnableToReadFile` exception, whatever
-  the value of `ignore_missing`.
+* With `file_pattern`, the source storage is listed once per input, when the iteration starts: files added to the
+  source during the iteration are copied by the next execution of the task. With an SFTP storage and long-running
+  downstream tasks, see [SFTP stale connection](../../troubleshooting.md).
+* Each input is processed: the files are copied for each input received by the task (e.g. after an iterable task),
+  even if they have already been copied during this process execution. A path given several times in the same input
+  is copied once.
+* The file is written to `destination_filesystem` with the same path, overwriting any existing file. The existence of
+  the files given as input is checked in `source_filesystem` (see `ignore_missing`).
 * A failure while writing to `destination_filesystem` throws a `League\Flysystem\FilesystemException` (e.g.
   `UnableToWriteFile`): the task's `error_strategy` applies, and with `remove_source: true` the source file is kept.
 * To read a copied file with a core task (e.g.

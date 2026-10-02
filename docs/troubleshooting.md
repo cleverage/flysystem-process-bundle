@@ -16,7 +16,7 @@ Connection closed prematurely
 
 Typically the first SFTP task succeeds (a file is fetched/listed), then the process spends a long
 time doing other work (large CSV import, thousands of API calls, …), and a subsequent SFTP task —
-often the archiving step, or the next iteration of an iterable task that re-lists the source — blows
+often the archiving step, or the listing of the source for the next input of an iterable task — blows
 up with the error above.
 
 ### Cause

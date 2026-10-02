@@ -32,9 +32,11 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
     protected FilesystemOperator $destinationFS;
 
     /**
-     * @var array<int, string>
+     * Files of the current input, null when no iteration is in progress.
+     *
+     * @var list<string>|null
      */
-    protected array $matchingFiles = [];
+    protected ?array $matchingFiles = null;
 
     /**
      * @param ServiceLocator<FilesystemOperator> $storages
@@ -67,10 +69,12 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
      */
     public function execute(ProcessState $state): void
     {
-        $this->findMatchingFiles($state);
+        // The files are listed once per input, when its iteration starts
+        $this->matchingFiles ??= $this->findMatchingFiles($state);
 
         $file = current($this->matchingFiles);
-        if (!$file) {
+        if (false === $file) {
+            $this->matchingFiles = null;
             $state->setSkipped(true);
 
             return;
@@ -82,55 +86,62 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
         $state->setOutput($file);
     }
 
-    /**
-     * @throws \UnexpectedValueException
-     * @throws \InvalidArgumentException
-     * @throws FilesystemException
-     */
     public function next(ProcessState $state): bool
     {
-        $this->findMatchingFiles($state);
+        if (null === $this->matchingFiles) {
+            return false;
+        }
+        if (false !== next($this->matchingFiles)) {
+            return true;
+        }
 
-        return false !== next($this->matchingFiles);
+        // End of the iteration: the next input lists its files again
+        $this->matchingFiles = null;
+
+        return false;
     }
 
     /**
+     * @return list<string>
+     *
      * @throws \UnexpectedValueException
      * @throws \InvalidArgumentException
      * @throws FilesystemException
      */
-    protected function findMatchingFiles(ProcessState $state): void
+    protected function findMatchingFiles(ProcessState $state): array
     {
+        /** @var bool $ignoreMissing */
+        $ignoreMissing = $this->getOption($state, 'ignore_missing');
+        $matchingFiles = [];
+
         /** @var ?string $filePattern */
         $filePattern = $this->getOption($state, 'file_pattern');
-        if ($filePattern) {
+        if (null !== $filePattern && '' !== $filePattern) {
             foreach ($this->sourceFS->listContents('/') as $file) {
-                if ('file' === $file->type()
-                    && preg_match($filePattern, $file->path())
-                    && !\in_array($file->path(), $this->matchingFiles, true)
-                ) {
-                    $this->matchingFiles[] = $file->path();
+                if ('file' === $file->type() && preg_match($filePattern, $file->path())) {
+                    $matchingFiles[] = $file->path();
                 }
             }
         } else {
-            /** @var array<string>|string|null $input */
             $input = $state->getInput();
-            if (!$input) {
+            if (null === $input || '' === $input || [] === $input) {
                 throw new \UnexpectedValueException('No pattern neither input provided for the Task');
             }
-            if (\is_array($input)) {
-                foreach ($input as $file) {
-                    if (!\in_array($file, $this->matchingFiles, true)) {
-                        $this->matchingFiles[] = $file;
-                    }
+            /** @var list<string> $files */
+            $files = \is_array($input) ? array_values($input) : [$input];
+            foreach (array_unique($files) as $file) {
+                if ($this->sourceFS->fileExists($file)) {
+                    $matchingFiles[] = $file;
+                } elseif (!$ignoreMissing) {
+                    throw new \UnexpectedValueException("File {$file} not found in source filesystem");
                 }
-            } elseif (!\in_array($input, $this->matchingFiles, true)) {
-                $this->matchingFiles[] = $input;
             }
         }
-        if ([] === $this->matchingFiles && !$this->getOption($state, 'ignore_missing')) {
+        if ([] === $matchingFiles && !$ignoreMissing) {
             throw new \UnexpectedValueException('File(s) not found in source filesystem');
         }
+
+        return $matchingFiles;
     }
 
     /**

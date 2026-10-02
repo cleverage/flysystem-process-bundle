@@ -32,6 +32,7 @@ class FileFetchTaskTest extends TestCase
     {
         $this->source = $this->createMock(FilesystemOperator::class);
         $this->source->method('readStream')->willReturnCallback(static fn () => fopen('php://memory', 'r'));
+        $this->source->method('fileExists')->willReturn(true);
         $this->destination = $this->createMock(FilesystemOperator::class);
     }
 

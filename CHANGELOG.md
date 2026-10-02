@@ -1,6 +1,16 @@
 Latest
 ------
 
+### Changes
+* [#33](https://github.com/cleverage/flysystem-process-bundle/issues/33) Add missing tests: FileFetchTask, ListContentTask and RemoveFileTask on local storages, bundle and DI extension.
+
+### Fixes
+* [#37](https://github.com/cleverage/flysystem-process-bundle/issues/37) Fix FileFetchTask: list the source storage once per input (it was listed again before each file). Update documentation, add tests.
+* [#38](https://github.com/cleverage/flysystem-process-bundle/issues/38) Fix FileFetchTask: process each input (with `file_pattern`, only the first input copied the files; a path received twice was skipped). Update documentation, add tests.
+* [#39](https://github.com/cleverage/flysystem-process-bundle/issues/39) Fix FileFetchTask: apply `ignore_missing` to the files given as input (a missing file threw `UnableToReadFile`). Update documentation, add tests.
+* [#40](https://github.com/cleverage/flysystem-process-bundle/issues/40) Fix FileFetchTask and RemoveFileTask: a file named `0` is no longer handled as no file. Add tests.
+* [#41](https://github.com/cleverage/flysystem-process-bundle/issues/41) Fix RemoveFileTask: a missing file is logged as not found (it was logged as deleted), accept a list of paths, fix the deletion failure message. Update documentation, add tests.
+
 v3.1
 ------
 
