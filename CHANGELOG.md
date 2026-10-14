@@ -2,6 +2,7 @@ Latest
 ------
 
 ### Changes
+* [#47](https://github.com/cleverage/flysystem-process-bundle/issues/47) Add a `.gitattributes`: the development files (`.docker/`, `.github/`, `tests/`, quality tools and PHPUnit configurations, `Makefile`) are no longer part of the archive installed by Composer (`dist`).
 * [#45](https://github.com/cleverage/flysystem-process-bundle/issues/45) Require `league/flysystem` and `psr/log`, used directly by the tasks but only installed through `league/flysystem-bundle` and `cleverage/process-bundle`; add `league/flysystem-local` (used by the tests) to the dev requirements.
 
 v3.2
