@@ -14,7 +14,7 @@ clever_age_process:
             description: 'Export the catalog to the SFTP server'
             tasks:
                 data:
-                    service: '@CleverAge\ProcessBundle\Task\ConstantIterableOutputTask' # Replace with your own reader
+                    task: constant_iterable_output # Replace with your own reader
                     options:
                         output:
                             - { sku: 'SKU-001', name: 'Product 1', price: '12.50' }
@@ -22,14 +22,14 @@ clever_age_process:
                     outputs: [write]
 
                 write:
-                    service: '@CleverAge\ProcessBundle\Task\File\Csv\CsvWriterTask'
+                    task: csv_writer
                     options:
                         file_path: '%local.storage.dir%/catalog_{date_time}.csv'
                         headers: [sku, name, price]
                     outputs: [relative_path]
 
                 relative_path:
-                    service: '@CleverAge\ProcessBundle\Task\TransformerTask'
+                    task: transformer
                     options:
                         transformers:
                             callback:
@@ -37,7 +37,7 @@ clever_age_process:
                     outputs: [upload]
 
                 upload:
-                    service: '@CleverAge\FlysystemProcessBundle\Task\FileFetchTask'
+                    task: flysystem_file_fetch
                     options:
                         source_filesystem: 'local.storage'
                         destination_filesystem: 'remote.storage.outgoing'
@@ -45,7 +45,7 @@ clever_age_process:
                     outputs: [log_upload]
 
                 log_upload:
-                    service: '@CleverAge\ProcessBundle\Task\Reporting\LoggerTask'
+                    task: logger
                     options:
                         level: info
                         message: 'File uploaded'

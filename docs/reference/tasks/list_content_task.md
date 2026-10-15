@@ -8,6 +8,7 @@ Task reference
 --------------
 
 * **Service**: `CleverAge\FlysystemProcessBundle\Task\ListContentTask`
+* **Code**: `flysystem_list_content` (`task: flysystem_list_content`)
 * **Iterable task**
 
 Accepted inputs
@@ -45,13 +46,13 @@ Examples
 ```yaml
 # Task configuration level
 list:
-  service: '@CleverAge\FlysystemProcessBundle\Task\ListContentTask'
+  task: flysystem_list_content
   options:
     filesystem: 'remote.storage'
     file_pattern: '/\.csv$/'
   outputs: [get_path]
 get_path:
-  service: '@CleverAge\ProcessBundle\Task\PropertyGetterTask'
+  task: property_getter
   options:
     property: 'path'
   outputs: [log]
@@ -63,12 +64,12 @@ get_path:
 ```yaml
 # Task configuration level
 list:
-  service: '@CleverAge\FlysystemProcessBundle\Task\ListContentTask'
+  task: flysystem_list_content
   options:
     filesystem: 'remote.storage'
   outputs: [only_files]
 only_files:
-  service: '@CleverAge\ProcessBundle\Task\FilterTask'
+  task: filter
   options:
     match:
       type: 'file'

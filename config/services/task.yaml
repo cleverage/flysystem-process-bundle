@@ -1,31 +1,48 @@
 services:
     _defaults:
-        public: false
+        # Public for the direct access from the service container, deprecated since 3.3: private in 4.0
+        public: true
         tags:
             - { name: monolog.logger, channel: cleverage_process_task }
+            - { name: container.private, package: cleverage/flysystem-process-bundle, version: '3.3' }
 
-    cleverage_flysystem_process.task.file_fetch:
-        class: CleverAge\FlysystemProcessBundle\Task\FileFetchTask
-        shared: false
-        arguments: [!tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }]
     CleverAge\FlysystemProcessBundle\Task\FileFetchTask:
-        alias: cleverage_flysystem_process.task.file_fetch
-        public: true
-
-    cleverage_flysystem_process.task.list_content:
-        class: CleverAge\FlysystemProcessBundle\Task\ListContentTask
         shared: false
         arguments: [!tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }]
-    CleverAge\FlysystemProcessBundle\Task\ListContentTask:
-        alias: cleverage_flysystem_process.task.list_content
-        public: true
+        tags:
+            - { name: cleverage.task, code: flysystem_file_fetch }
+    cleverage_flysystem_process.task.file_fetch:
+        alias: CleverAge\FlysystemProcessBundle\Task\FileFetchTask
+        public: false
+        deprecated:
+            package: cleverage/flysystem-process-bundle
+            version: '3.3'
+            message: 'The "%alias_id%" service alias is deprecated, use the "flysystem_file_fetch" task code or the class name of the task instead. It will be removed in 4.0.'
 
-    cleverage_flysystem_process.task.remove_file:
-        class: CleverAge\FlysystemProcessBundle\Task\RemoveFileTask
+    CleverAge\FlysystemProcessBundle\Task\ListContentTask:
+        shared: false
+        arguments: [!tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }]
+        tags:
+            - { name: cleverage.task, code: flysystem_list_content }
+    cleverage_flysystem_process.task.list_content:
+        alias: CleverAge\FlysystemProcessBundle\Task\ListContentTask
+        public: false
+        deprecated:
+            package: cleverage/flysystem-process-bundle
+            version: '3.3'
+            message: 'The "%alias_id%" service alias is deprecated, use the "flysystem_list_content" task code or the class name of the task instead. It will be removed in 4.0.'
+
+    CleverAge\FlysystemProcessBundle\Task\RemoveFileTask:
         shared: false
         arguments:
             - '@logger'
             - !tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }
-    CleverAge\FlysystemProcessBundle\Task\RemoveFileTask:
-        alias: cleverage_flysystem_process.task.remove_file
-        public: true
+        tags:
+            - { name: cleverage.task, code: flysystem_remove_file }
+    cleverage_flysystem_process.task.remove_file:
+        alias: CleverAge\FlysystemProcessBundle\Task\RemoveFileTask
+        public: false
+        deprecated:
+            package: cleverage/flysystem-process-bundle
+            version: '3.3'
+            message: 'The "%alias_id%" service alias is deprecated, use the "flysystem_remove_file" task code or the class name of the task instead. It will be removed in 4.0.'
