@@ -20,11 +20,11 @@ clever_age_process:
         demo.<name>:
             tasks:
                 <task>:
-                    service: '@CleverAge\FlysystemProcessBundle\Task\...'
+                    task: flysystem_file_fetch # code of the task, given on its reference page
                     options: {}
                     outputs: [debug]
                 debug:
-                    service: '@CleverAge\ProcessBundle\Task\Debug\DebugTask'
+                    task: debug
 ```
 
 <!-- Input data, command and actual output -->
