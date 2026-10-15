@@ -7,6 +7,7 @@ Task reference
 --------------
 
 * **Service**: `CleverAge\FlysystemProcessBundle\Task\RemoveFileTask`
+* **Code**: `flysystem_remove_file` (`task: flysystem_remove_file`)
 
 Accepted inputs
 ---------------
@@ -42,7 +43,7 @@ my_process:
   entry_point: remove_from_input
   tasks:
     remove_from_input:
-      service: '@CleverAge\FlysystemProcessBundle\Task\RemoveFileTask'
+      task: flysystem_remove_file
       options:
         filesystem: 'remote.storage'
 ```
@@ -52,7 +53,7 @@ my_process:
 ```yaml
 # Task configuration level
 purge:
-  service: '@CleverAge\FlysystemProcessBundle\Task\RemoveFileTask'
+  task: flysystem_remove_file
   options:
     filesystem: 'remote.storage'
     file_pattern: '/\.csv$/'

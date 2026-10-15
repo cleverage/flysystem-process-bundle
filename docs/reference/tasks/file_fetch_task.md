@@ -11,6 +11,7 @@ Task reference
 --------------
 
 * **Service**: `CleverAge\FlysystemProcessBundle\Task\FileFetchTask`
+* **Code**: `flysystem_file_fetch` (`task: flysystem_file_fetch`)
 * **Iterable task**
 
 Accepted inputs
@@ -55,7 +56,7 @@ Examples
 ```yaml
 # Task configuration level
 fetch:
-  service: '@CleverAge\FlysystemProcessBundle\Task\FileFetchTask'
+  task: flysystem_file_fetch
   options:
     source_filesystem: 'remote.storage'
     destination_filesystem: 'local.storage'
@@ -74,7 +75,7 @@ my_process:
   entry_point: copy_from_input
   tasks:
     copy_from_input:
-      service: '@CleverAge\FlysystemProcessBundle\Task\FileFetchTask'
+      task: flysystem_file_fetch
       options:
         source_filesystem: '{{ source }}'
         destination_filesystem: '{{ destination }}'
@@ -86,7 +87,7 @@ my_process:
 ```yaml
 # Task configuration level
 archive:
-  service: '@CleverAge\FlysystemProcessBundle\Task\FileFetchTask'
+  task: flysystem_file_fetch
   options:
     source_filesystem: 'remote.storage.incoming'
     destination_filesystem: 'remote.storage.archive'

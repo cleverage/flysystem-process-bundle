@@ -25,6 +25,17 @@ require their own package, e.g. `composer require league/flysystem-sftp-v3` for 
 
 ## Configuration
 
+The tasks of this bundle are registered as services (non-shared) and are used in your processes by their code,
+`flysystem_file_fetch`, `flysystem_list_content` and `flysystem_remove_file` (e.g. `task: flysystem_file_fetch`, requires
+`cleverage/process-bundle` 5.4 or later, see its [task definition](https://github.com/cleverage/process-bundle/blob/main/docs/reference/02-task_definition.md)).
+Referencing them by their class name (`service: '@CleverAge\FlysystemProcessBundle\Task\FileFetchTask'`) is
+deprecated since `cleverage/process-bundle` 5.4.
+
+Their service id is their class name. Fetching them directly from the service container is deprecated since 3.3 (they
+will be private in 4.0); their former ids, `cleverage_flysystem_process.task.file_fetch`,
+`cleverage_flysystem_process.task.list_content` and `cleverage_flysystem_process.task.remove_file`, are deprecated
+aliases since 3.3, removed in 4.0.
+
 The tasks of this bundle work with the Flysystem **storages** configured in `config/packages/flysystem.yaml`: their
 `filesystem`, `source_filesystem` and `destination_filesystem` options take the name of a storage (the key under
 `flysystem.storages`). Configure at least one storage:

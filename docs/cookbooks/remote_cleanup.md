@@ -12,27 +12,27 @@ clever_age_process:
             help: "bin/console cleverage:process:execute app.remote_cleanup -c year:2025"
             tasks:
                 list:
-                    service: '@CleverAge\FlysystemProcessBundle\Task\ListContentTask'
+                    task: flysystem_list_content
                     options:
                         filesystem: 'remote.storage.archive'
                         file_pattern: '/^catalog_{{ year }}.*\.csv$/'
                     outputs: [only_files]
 
                 only_files:
-                    service: '@CleverAge\ProcessBundle\Task\FilterTask'
+                    task: filter
                     options:
                         match:
                             type: 'file'
                     outputs: [get_path]
 
                 get_path:
-                    service: '@CleverAge\ProcessBundle\Task\PropertyGetterTask'
+                    task: property_getter
                     options:
                         property: 'path'
                     outputs: [remove]
 
                 remove:
-                    service: '@CleverAge\FlysystemProcessBundle\Task\RemoveFileTask'
+                    task: flysystem_remove_file
                     options:
                         filesystem: 'remote.storage.archive'
 ```
@@ -59,7 +59,7 @@ clever_age_process:
         app.remote_cleanup_pattern:
             tasks:
                 remove:
-                    service: '@CleverAge\FlysystemProcessBundle\Task\RemoveFileTask'
+                    task: flysystem_remove_file
                     options:
                         filesystem: 'remote.storage.archive'
                         file_pattern: '/^catalog_{{ year }}.*\.csv$/'

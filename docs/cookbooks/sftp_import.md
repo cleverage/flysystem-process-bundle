@@ -43,7 +43,7 @@ clever_age_process:
             description: 'Import the CSV files dropped on the SFTP server'
             tasks:
                 fetch:
-                    service: '@CleverAge\FlysystemProcessBundle\Task\FileFetchTask'
+                    task: flysystem_file_fetch
                     options:
                         source_filesystem: 'remote.storage.incoming'
                         destination_filesystem: 'local.storage'
@@ -51,20 +51,20 @@ clever_age_process:
                     outputs: [read, archive] # "archive" is executed once "read" has read the whole file
 
                 read:
-                    service: '@CleverAge\ProcessBundle\Task\File\Csv\InputCsvReaderTask'
+                    task: input_csv_reader
                     options:
                         base_path: '%local.storage.dir%'
                         delimiter: ';'
                     outputs: [import_line]
 
                 import_line:
-                    service: '@CleverAge\ProcessBundle\Task\Reporting\LoggerTask' # Replace with your own transformation and writer tasks
+                    task: logger # Replace with your own transformation and writer tasks
                     options:
                         level: info
                         message: 'Imported line'
 
                 archive:
-                    service: '@CleverAge\FlysystemProcessBundle\Task\FileFetchTask'
+                    task: flysystem_file_fetch
                     options:
                         source_filesystem: 'remote.storage.incoming'
                         destination_filesystem: 'remote.storage.archive'
@@ -72,7 +72,7 @@ clever_age_process:
                     outputs: [cleanup_local]
 
                 cleanup_local:
-                    service: '@CleverAge\FlysystemProcessBundle\Task\RemoveFileTask'
+                    task: flysystem_remove_file
                     options:
                         filesystem: 'local.storage'
 ```
