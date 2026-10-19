@@ -23,6 +23,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Remove files from a filesystem.
+ *
+ * @final since 3.3
  */
 class RemoveFileTask extends AbstractConfigurableTask
 {

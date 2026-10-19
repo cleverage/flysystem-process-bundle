@@ -23,6 +23,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Iterate over the content of a filesystem.
+ *
+ * @final since 3.3
  */
 class ListContentTask extends AbstractConfigurableTask implements IterableTaskInterface
 {

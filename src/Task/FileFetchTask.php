@@ -24,6 +24,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Copy (or move) file from one filesystem to another, using Flysystem
  * Either get files using a file regexp, or take files from input.
+ *
+ * @final since 3.3
  */
 class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInterface
 {
@@ -148,7 +150,7 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
      * @throws \InvalidArgumentException
      * @throws FilesystemException
      */
-    protected function doFileCopy(ProcessState $state, string $filename, bool $removeSource): bool|string|null
+    protected function doFileCopy(ProcessState $state, string $filename, bool $removeSource): bool|string|null // @phpstan-ignore return.unusedType, return.unusedType (protected: narrowed when the class becomes final, in 4.0)
     {
         $buffer = $this->sourceFS->readStream($filename);
 
