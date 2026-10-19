@@ -15,6 +15,9 @@ namespace CleverAge\FlysystemProcessBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * @final since 3.3
+ */
 class CleverAgeFlysystemProcessBundle extends Bundle
 {
     #[\Override]
