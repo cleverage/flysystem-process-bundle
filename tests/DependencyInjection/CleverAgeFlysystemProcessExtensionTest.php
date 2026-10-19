@@ -23,10 +23,44 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocatorArgument;
 use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Yaml\Yaml;
 
 #[CoversClass(CleverAgeFlysystemProcessExtension::class)]
 class CleverAgeFlysystemProcessExtensionTest extends TestCase
 {
+    public function testEveryServiceDefinitionFileIsLoaded(): void
+    {
+        $container = new ContainerBuilder();
+        (new CleverAgeFlysystemProcessExtension())->load([], $container);
+
+        $files = glob(\dirname(__DIR__, 2).'/config/services/*.yaml');
+        self::assertIsArray($files);
+        self::assertNotEmpty($files);
+        foreach ($files as $file) {
+            $config = Yaml::parseFile($file, Yaml::PARSE_CUSTOM_TAGS);
+            self::assertIsArray($config);
+            if (!isset($config['services'])) {
+                continue;
+            }
+            self::assertIsArray($config['services']);
+            foreach (array_keys($config['services']) as $id) {
+                if ('_defaults' === $id) {
+                    continue;
+                }
+                if (str_ends_with((string) $id, '\\')) {
+                    // Resource: at least one service registered under the namespace prefix
+                    $registered = array_filter(
+                        array_keys($container->getDefinitions()),
+                        static fn (string $definitionId): bool => str_starts_with($definitionId, (string) $id)
+                    );
+                    self::assertNotEmpty($registered, \sprintf('No service registered for the "%s" resource of %s', $id, basename($file)));
+                    continue;
+                }
+                self::assertTrue($container->has((string) $id), \sprintf('Service "%s" of %s is not registered', $id, basename($file)));
+            }
+        }
+    }
+
     /**
      * @return iterable<string, array{class-string, string, string}>
      */
