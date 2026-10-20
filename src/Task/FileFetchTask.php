@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CleverAge\FlysystemProcessBundle\Task;
 
+use CleverAge\FlysystemProcessBundle\Exception\UnexpectedValueException;
 use CleverAge\ProcessBundle\Model\AbstractConfigurableTask;
 use CleverAge\ProcessBundle\Model\IterableTaskInterface;
 use CleverAge\ProcessBundle\Model\ProcessState;
@@ -127,7 +128,7 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
         } else {
             $input = $state->getInput();
             if (null === $input || '' === $input || [] === $input) {
-                throw new \UnexpectedValueException('No pattern neither input provided for the Task');
+                throw new UnexpectedValueException('No pattern neither input provided for the Task');
             }
             /** @var list<string> $files */
             $files = \is_array($input) ? array_values($input) : [$input];
@@ -135,12 +136,12 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
                 if ($this->sourceFS->fileExists($file)) {
                     $matchingFiles[] = $file;
                 } elseif (!$ignoreMissing) {
-                    throw new \UnexpectedValueException("File {$file} not found in source filesystem");
+                    throw new UnexpectedValueException("File {$file} not found in source filesystem");
                 }
             }
         }
         if ([] === $matchingFiles && !$ignoreMissing) {
-            throw new \UnexpectedValueException('File(s) not found in source filesystem');
+            throw new UnexpectedValueException('File(s) not found in source filesystem');
         }
 
         return $matchingFiles;

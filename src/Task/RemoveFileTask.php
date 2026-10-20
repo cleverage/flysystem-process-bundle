@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CleverAge\FlysystemProcessBundle\Task;
 
+use CleverAge\FlysystemProcessBundle\Exception\UnexpectedValueException;
 use CleverAge\ProcessBundle\Model\AbstractConfigurableTask;
 use CleverAge\ProcessBundle\Model\ProcessState;
 use League\Flysystem\FilesystemException;
@@ -63,7 +64,7 @@ class RemoveFileTask extends AbstractConfigurableTask
         } else {
             $input = $state->getInput();
             if (null === $input || '' === $input || [] === $input) {
-                throw new \UnexpectedValueException('No pattern neither input provided for the Task');
+                throw new UnexpectedValueException('No pattern neither input provided for the Task');
             }
 
             /** @var list<string> $files */
