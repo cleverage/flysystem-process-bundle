@@ -66,6 +66,8 @@ in a sub-directory, configure a dedicated storage whose root is this directory.
 See the [flysystem-bundle documentation](https://github.com/thephpleague/flysystem-bundle?tab=readme-ov-file)
 for the configuration of other adapters (FTP, Amazon S3, Azure, Google Cloud Storage...).
 
+No option can be configured under `clever_age_flysystem_process`: a key there is ignored. Configuring one is deprecated since 3.3 (an `E_USER_DEPRECATED` error is triggered when the container is compiled), the keys will be rejected in 4.0.
+
 ## Documentation
 
 - Cookbooks
