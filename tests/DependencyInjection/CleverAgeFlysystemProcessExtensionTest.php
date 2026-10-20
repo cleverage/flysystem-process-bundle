@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace CleverAge\FlysystemProcessBundle\Tests\DependencyInjection;
 
 use CleverAge\FlysystemProcessBundle\DependencyInjection\CleverAgeFlysystemProcessExtension;
+use CleverAge\FlysystemProcessBundle\DependencyInjection\Configuration;
 use CleverAge\FlysystemProcessBundle\Task\FileFetchTask;
 use CleverAge\FlysystemProcessBundle\Task\ListContentTask;
 use CleverAge\FlysystemProcessBundle\Task\RemoveFileTask;
@@ -26,6 +27,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Yaml\Yaml;
 
 #[CoversClass(CleverAgeFlysystemProcessExtension::class)]
+#[CoversClass(Configuration::class)]
 class CleverAgeFlysystemProcessExtensionTest extends TestCase
 {
     public function testEveryServiceDefinitionFileIsLoaded(): void
@@ -122,5 +124,53 @@ class CleverAgeFlysystemProcessExtensionTest extends TestCase
             static fn (string $id): bool => str_starts_with($id, 'CleverAge\\FlysystemProcessBundle\\Task\\')
         );
         self::assertEqualsCanonicalizing(array_column(iterator_to_array(self::provideTasks()), 0), array_values($ids));
+    }
+
+    public function testConfigurationKeysAreDeprecated(): void
+    {
+        $deprecations = $this->collectDeprecations(static function (): void {
+            (new CleverAgeFlysystemProcessExtension())->load([[], ['foo' => true], ['bar' => 1, 'foo' => false]], new ContainerBuilder());
+        });
+
+        self::assertSame(['Since cleverage/flysystem-process-bundle 3.3: Configuring "clever_age_flysystem_process" is deprecated, the bundle has no configuration: the keys "foo", "bar" are ignored. They will be rejected in 4.0.'], $deprecations);
+    }
+
+    public function testNoDeprecationWithoutConfigurationKey(): void
+    {
+        $deprecations = $this->collectDeprecations(static function (): void {
+            (new CleverAgeFlysystemProcessExtension())->load([[], []], new ContainerBuilder());
+        });
+
+        self::assertSame([], $deprecations);
+    }
+
+    public function testConfigurationHasNoOption(): void
+    {
+        $configuration = (new CleverAgeFlysystemProcessExtension())->getConfiguration([], new ContainerBuilder());
+
+        self::assertInstanceOf(Configuration::class, $configuration);
+        self::assertSame('clever_age_flysystem_process', $configuration->getConfigTreeBuilder()->buildTree()->getName());
+    }
+
+    /**
+     * @param callable(): void $callback
+     *
+     * @return list<string>
+     */
+    private function collectDeprecations(callable $callback): array
+    {
+        $deprecations = [];
+        set_error_handler(static function (int $errno, string $errstr) use (&$deprecations): bool {
+            $deprecations[] = $errstr;
+
+            return true;
+        }, \E_USER_DEPRECATED);
+        try {
+            $callback();
+        } finally {
+            restore_error_handler();
+        }
+
+        return $deprecations;
     }
 }
