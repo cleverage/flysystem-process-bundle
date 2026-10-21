@@ -186,7 +186,7 @@ class CleverAgeFlysystemProcessExtensionTest extends TestCase
             (new CleverAgeFlysystemProcessExtension())->load([[], ['foo' => true], ['bar' => 1, 'foo' => false]], new ContainerBuilder());
         });
 
-        self::assertSame(['Since cleverage/flysystem-process-bundle 3.3: Configuring "clever_age_flysystem_process" is deprecated, the bundle has no configuration: the keys "foo", "bar" are ignored. They will be rejected in 4.0.'], $deprecations);
+        self::assertSame(['Since cleverage/flysystem-process-bundle 3.3: Configuring "cleverage_flysystem_process" is deprecated, the bundle has no configuration: the keys "foo", "bar" are ignored. They will be rejected in 4.0.'], $deprecations);
     }
 
     public function testNoDeprecationWithoutConfigurationKey(): void
@@ -203,7 +203,7 @@ class CleverAgeFlysystemProcessExtensionTest extends TestCase
         $configuration = (new CleverAgeFlysystemProcessExtension())->getConfiguration([], new ContainerBuilder());
 
         self::assertInstanceOf(Configuration::class, $configuration);
-        self::assertSame('clever_age_flysystem_process', $configuration->getConfigTreeBuilder()->buildTree()->getName());
+        self::assertSame('cleverage_flysystem_process', $configuration->getConfigTreeBuilder()->buildTree()->getName());
     }
 
     /**

@@ -27,6 +27,12 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  */
 class CleverAgeFlysystemProcessExtension extends Extension
 {
+    #[\Override]
+    public function getAlias(): string
+    {
+        return 'cleverage_flysystem_process';
+    }
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $keys = array_keys(array_merge(...$configs));

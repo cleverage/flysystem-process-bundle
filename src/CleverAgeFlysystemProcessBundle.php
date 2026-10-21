@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace CleverAge\FlysystemProcessBundle;
 
+use CleverAge\FlysystemProcessBundle\DependencyInjection\CleverAgeFlysystemProcessExtension;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -20,6 +22,19 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class CleverAgeFlysystemProcessBundle extends Bundle
 {
+    /**
+     * The alias of the extension, "cleverage_flysystem_process", is not the one guessed from the bundle name.
+     */
+    #[\Override]
+    public function getContainerExtension(): ExtensionInterface
+    {
+        if (!$this->extension instanceof ExtensionInterface) {
+            $this->extension = new CleverAgeFlysystemProcessExtension();
+        }
+
+        return $this->extension;
+    }
+
     #[\Override]
     public function getPath(): string
     {
