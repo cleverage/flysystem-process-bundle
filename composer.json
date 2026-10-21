@@ -15,27 +15,22 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Vincent Chalnot",
-            "email": "vchalnot@clever-age.com",
-            "homepage": "http://chalnot.fr",
-            "role": "Lead Developer"
+            "name": "Nicolas Joubert",
+            "email": "njoubert@clever-age.com",
+            "homepage": "https://github.com/njoubert-cleverage",
+            "role": "Maintainer"
         },
         {
-            "name": "Valentin Clavreul",
-            "email": "vclavreul@clever-age.com",
-            "role": "Developer"
+            "name": "Xavier Marchegay",
+            "email": "xmarchegay@clever-age.com",
+            "homepage": "https://github.com/xaviermarchegay",
+            "role": "Maintainer"
         },
         {
-            "name": "Madeline Veyrenc",
-            "email": "mveyrenc@clever-age.com",
-            "homepage": "https://github.com/mveyrenc",
-            "role": "Developer"
-        },
-        {
-          "name": "Xavier Marchegay",
-          "email": "xmarchegay@clever-age.com",
-          "homepage": "https://github.com/xmarchegay",
-          "role": "Lead Developer"
+            "name": "Grégory Tonon",
+            "email": "gtonon@clever-age.com",
+            "homepage": "https://github.com/clever-age-gtonon",
+            "role": "Maintainer"
         }
     ],
     "autoload": {
