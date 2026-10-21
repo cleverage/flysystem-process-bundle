@@ -3,7 +3,6 @@ services:
         # Public for the direct access from the service container, deprecated since 3.3: private in 4.0
         public: true
         tags:
-            - { name: monolog.logger, channel: cleverage_process_task }
             - { name: container.private, package: cleverage/flysystem-process-bundle, version: '3.3' }
 
     CleverAge\FlysystemProcessBundle\Task\FileFetchTask:
@@ -38,6 +37,7 @@ services:
             - '@logger'
             - !tagged_locator { tag: 'flysystem.storage', index_by: 'storage' }
         tags:
+            - { name: monolog.logger, channel: cleverage_process_task }
             - { name: cleverage.task, code: flysystem_remove_file }
     cleverage_flysystem_process.task.remove_file:
         alias: CleverAge\FlysystemProcessBundle\Task\RemoveFileTask
