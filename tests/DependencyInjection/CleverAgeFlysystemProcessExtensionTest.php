@@ -24,6 +24,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocatorArgument;
 use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Yaml\Yaml;
 
 #[CoversClass(CleverAgeFlysystemProcessExtension::class)]
@@ -124,6 +125,59 @@ class CleverAgeFlysystemProcessExtensionTest extends TestCase
             static fn (string $id): bool => str_starts_with($id, 'CleverAge\\FlysystemProcessBundle\\Task\\')
         );
         self::assertEqualsCanonicalizing(array_column(iterator_to_array(self::provideTasks()), 0), array_values($ids));
+
+        // Every task has its own code, prefixed by the bridge name
+        $codes = array_column(iterator_to_array(self::provideTasks()), 1);
+        self::assertSame($codes, array_unique($codes));
+        foreach ($codes as $code) {
+            self::assertStringStartsWith('flysystem_', $code);
+        }
+
+        // Every former id is a deprecated alias
+        $aliases = array_filter(
+            array_keys($container->getAliases()),
+            static fn (string $id): bool => str_starts_with($id, 'cleverage_flysystem_process.task.')
+        );
+        self::assertEqualsCanonicalizing(array_column(iterator_to_array(self::provideTasks()), 2), array_values($aliases));
+    }
+
+    /**
+     * @return iterable<string, array{class-string, bool}>
+     */
+    public static function provideTasksLogger(): iterable
+    {
+        yield 'file_fetch' => [FileFetchTask::class, false];
+        yield 'list_content' => [ListContentTask::class, false];
+        yield 'remove_file' => [RemoveFileTask::class, true];
+    }
+
+    /**
+     * @param class-string $class
+     */
+    #[DataProvider('provideTasksLogger')]
+    public function testLoggerIsInjected(string $class, bool $logged): void
+    {
+        $container = new ContainerBuilder();
+        (new CleverAgeFlysystemProcessExtension())->load([], $container);
+
+        $definition = $container->getDefinition($class);
+        $references = [];
+        foreach ($definition->getArguments() as $argument) {
+            if ($argument instanceof Reference) {
+                $references[] = (string) $argument;
+            }
+        }
+        self::assertNotContains('monolog.logger', $references);
+        if ($logged) {
+            // Logged in the process tasks channel: the "channel" of the "monolog.logger" tag only applies to a
+            // reference to the "logger" service
+            self::assertSame([['channel' => 'cleverage_process_task']], $definition->getTag('monolog.logger'));
+            self::assertContains('logger', $references);
+        } else {
+            // No logger: the tag would have no effect
+            self::assertFalse($definition->hasTag('monolog.logger'));
+            self::assertNotContains('logger', $references);
+        }
     }
 
     public function testConfigurationKeysAreDeprecated(): void
