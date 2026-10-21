@@ -1,7 +1,12 @@
 Latest
 ------
 
+v3.3
+------
+
 ### Changes
+* Require `cleverage/process-bundle` `^5.4`.
+* Please follow [UPGRADE.md v3.3](UPGRADE.md#v33)
 * [#73](https://github.com/cleverage/flysystem-process-bundle/issues/73) Require `league/flysystem-bundle` `^3.2` instead of `^3.0` (3.0 and 3.1 trigger return type deprecations, the tests already required 3.2), the dev requirement is removed.
 * [#69](https://github.com/cleverage/flysystem-process-bundle/issues/69) Only `RemoveFileTask` has the `monolog.logger` tag (channel `cleverage_process_task`): `FileFetchTask` and `ListContentTask` have no logger, the tag had no effect on them. Add tests.
 * [#67](https://github.com/cleverage/flysystem-process-bundle/issues/67) The configuration key of the bundle (its extension alias) is `cleverage_flysystem_process`, instead of `clever_age_flysystem_process` (no option could be configured there). Configuring a key under `cleverage_flysystem_process` is deprecated: the bundle has no configuration and the keys were ignored without notice (new internal `Configuration`, empty; notice when the container is compiled). They will be rejected in 4.0. Require `symfony/deprecation-contracts`, used directly. Update documentation, add tests.

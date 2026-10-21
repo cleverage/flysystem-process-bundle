@@ -45,7 +45,7 @@
     },
     "require": {
         "php": "^8.2",
-        "cleverage/process-bundle": "^5.0",
+        "cleverage/process-bundle": "^5.4",
         "league/flysystem": "^3.0",
         "league/flysystem-bundle": "^3.2",
         "psr/log": "^2|^3",
