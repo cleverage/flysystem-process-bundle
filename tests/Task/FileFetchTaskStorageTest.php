@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CleverAge\FlysystemProcessBundle\Tests\Task;
 
+use CleverAge\FlysystemProcessBundle\Exception\UnexpectedValueException;
 use CleverAge\FlysystemProcessBundle\Task\FileFetchTask;
 use CleverAge\ProcessBundle\Model\ProcessState;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -143,7 +144,8 @@ class FileFetchTaskStorageTest extends StorageTestCase
 
     public function testUnknownStorage(): void
     {
-        $this->expectException(\Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException::class);
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unknown storage "unknown" (option "source_filesystem")');
         $this->createTask(['source_filesystem' => 'unknown']);
     }
 

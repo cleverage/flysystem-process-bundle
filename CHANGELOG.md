@@ -2,7 +2,7 @@ Latest
 ------
 
 ### Fixes
-* [#75](https://github.com/cleverage/flysystem-process-bundle/issues/75) `FileFetchTask` (`flysystem_file_fetch`): an unknown storage fails at initialization with an explicit message (`Unknown storage "…" (option "…")`, with the known storages) instead of `Service "…" not found`, When the task is executed after a failed initialization (process-bundle v5 goes on), it fails with an explicit message instead of `Typed property … must not be accessed before initialization`, and no longer reuses the storages of a previous initialization. Update documentation, add tests.
+* [#75](https://github.com/cleverage/flysystem-process-bundle/issues/75) `FileFetchTask` (`flysystem_file_fetch`): an unknown storage fails at initialization with an explicit message (`Unknown storage "…" (option "…")`, with the known storages) instead of `Service "…" not found`, When the task is executed after a failed initialization (process-bundle v5 goes on), it fails with an explicit message instead of `Typed property … must not be accessed before initialization`. Update documentation, add tests.
 
 v3.3
 ------

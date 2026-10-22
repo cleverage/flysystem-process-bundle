@@ -56,9 +56,6 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
     #[\Override]
     public function initialize(ProcessState $state): void
     {
-        // The storages of a previous initialization must not be used if this one fails
-        unset($this->sourceFS, $this->destinationFS);
-
         // Configure options
         parent::initialize($state);
 

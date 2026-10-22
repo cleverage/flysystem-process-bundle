@@ -76,19 +76,18 @@ class FileFetchTaskTest extends TestCase
 
     public function testTaskFailsExplicitlyWhenExecutedAfterAFailedInitialization(): void
     {
+        $state = $this->createState('unknown');
         $task = $this->createTask();
-        $task->initialize($this->createState());
         try {
-            $task->initialize($this->createState('unknown'));
+            $task->initialize($state);
             self::fail('The initialization should have failed');
         } catch (UnexpectedValueException) {
         }
 
-        // The storages of the previous initialization are not used
         $this->destination->expects($this->never())->method('writeStream');
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('The storages of the task are not available: its initialization has failed, see the previous error');
-        $task->execute($this->createState());
+        $task->execute($state);
     }
 
     private function createTask(): FileFetchTask
