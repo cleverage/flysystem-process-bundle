@@ -19,6 +19,7 @@ use CleverAge\ProcessBundle\Model\IterableTaskInterface;
 use CleverAge\ProcessBundle\Model\ProcessState;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\FilesystemOperator;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -50,19 +51,19 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
 
     /**
      * @throws \InvalidArgumentException
+     * @throws UnexpectedValueException
      */
     #[\Override]
     public function initialize(ProcessState $state): void
     {
+        // The storages of a previous initialization must not be used if this one fails
+        unset($this->sourceFS, $this->destinationFS);
+
         // Configure options
         parent::initialize($state);
 
-        /** @var string $sourceFilesystemOption */
-        $sourceFilesystemOption = $this->getOption($state, 'source_filesystem');
-        $this->sourceFS = $this->storages->get($sourceFilesystemOption);
-        /** @var string $destinationFilesystemOption */
-        $destinationFilesystemOption = $this->getOption($state, 'destination_filesystem');
-        $this->destinationFS = $this->storages->get($destinationFilesystemOption);
+        $this->sourceFS = $this->getStorage($state, 'source_filesystem');
+        $this->destinationFS = $this->getStorage($state, 'destination_filesystem');
     }
 
     /**
@@ -72,6 +73,11 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
      */
     public function execute(ProcessState $state): void
     {
+        // With process-bundle v5, a task is executed even if its initialization has failed (the error is logged)
+        if (!isset($this->sourceFS, $this->destinationFS)) {
+            throw new UnexpectedValueException('The storages of the task are not available: its initialization has failed, see the previous error');
+        }
+
         // The files are listed once per input, when its iteration starts
         $this->matchingFiles ??= $this->findMatchingFiles($state);
 
@@ -102,6 +108,20 @@ class FileFetchTask extends AbstractConfigurableTask implements IterableTaskInte
         $this->matchingFiles = null;
 
         return false;
+    }
+
+    /**
+     * @throws UnexpectedValueException
+     */
+    protected function getStorage(ProcessState $state, string $option): FilesystemOperator
+    {
+        /** @var string $storage */
+        $storage = $this->getOption($state, $option);
+        try {
+            return $this->storages->get($storage);
+        } catch (ServiceNotFoundException $e) {
+            throw new UnexpectedValueException(\sprintf('Unknown storage "%s" (option "%s"), known storages: "%s"', $storage, $option, implode('", "', array_keys($this->storages->getProvidedServices()))), 0, $e);
+        }
     }
 
     /**

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace CleverAge\FlysystemProcessBundle\Tests\Task;
 
+use CleverAge\FlysystemProcessBundle\Exception\UnexpectedValueException;
 use CleverAge\FlysystemProcessBundle\Task\FileFetchTask;
 use CleverAge\ProcessBundle\Model\ProcessState;
 use League\Flysystem\FilesystemOperator;
@@ -64,6 +65,32 @@ class FileFetchTaskTest extends TestCase
         $task->execute($state);
     }
 
+    public function testUnknownStorageFailsAtInitialization(): void
+    {
+        $task = $this->createTask();
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unknown storage "unknown" (option "destination_filesystem"), known storages: "source", "destination"');
+        $task->initialize($this->createState('unknown'));
+    }
+
+    public function testTaskFailsExplicitlyWhenExecutedAfterAFailedInitialization(): void
+    {
+        $task = $this->createTask();
+        $task->initialize($this->createState());
+        try {
+            $task->initialize($this->createState('unknown'));
+            self::fail('The initialization should have failed');
+        } catch (UnexpectedValueException) {
+        }
+
+        // The storages of the previous initialization are not used
+        $this->destination->expects($this->never())->method('writeStream');
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('The storages of the task are not available: its initialization has failed, see the previous error');
+        $task->execute($this->createState());
+    }
+
     private function createTask(): FileFetchTask
     {
         /** @var ServiceLocator<FilesystemOperator> $storages */
@@ -75,12 +102,12 @@ class FileFetchTaskTest extends TestCase
         return new FileFetchTask($storages);
     }
 
-    private function createState(): ProcessState&MockObject
+    private function createState(string $destination = 'destination'): ProcessState&MockObject
     {
         $state = $this->createMock(ProcessState::class);
         $state->method('getContextualizedOptions')->willReturn([
             'source_filesystem' => 'source',
-            'destination_filesystem' => 'destination',
+            'destination_filesystem' => $destination,
             'remove_source' => true,
         ]);
         $state->method('getInput')->willReturn('file.txt');
