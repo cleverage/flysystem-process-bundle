@@ -98,7 +98,9 @@ Notes
 -----
 
 * Both storages are resolved when the task is initialized, at the start of the process: an unknown storage name makes
-  the process fail before any task is executed.
+  the initialization fail (`Unknown storage "…"`, logged at the `critical` level). With process-bundle v5, the process
+  goes on and fails when the task is first executed (deprecated, the process will fail before executing any task in
+  process-bundle v6).
 * `file_pattern` is only tested on the files located at the root of `source_filesystem` (the listing is not
   recursive and directories are ignored). The pattern is tested on the path relative to the storage root: to target
   a sub-directory, configure a dedicated storage whose root is this directory.
