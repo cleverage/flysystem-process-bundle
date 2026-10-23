@@ -19,7 +19,7 @@ Accepted inputs
 
 * When `file_pattern` is set, the input is ignored.
 * Otherwise, `string|array<string>`: path, or list of paths, of the file(s) to copy, relative to the root of the
-  `source_filesystem` storage. An empty input throws an `\UnexpectedValueException`
+  `source_filesystem` storage. An empty input throws an `UnexpectedValueException`
   (`No pattern neither input provided for the Task`).
 
 If the task is the first task of the process and takes its files from the input, set the process `entry_point` to
@@ -43,7 +43,7 @@ Options
 | `destination_filesystem` | `string`       |  **X**   |         | Name of the Flysystem storage to write files to, as configured under `flysystem.storages`                                                                                                                                                                         |
 | `file_pattern`           | `string\|null` |          | `null`  | Regular expression (see [preg_match](https://www.php.net/manual/en/function.preg-match.php)) tested on the path of each file at the root of `source_filesystem`. If `null` (or empty), the file path(s) are taken from the input                                  |
 | `remove_source`          | `bool`         |          | `false` | Delete the file from `source_filesystem` after the copy (move instead of copy)                                                                                                                                                                                    |
-| `ignore_missing`         | `bool`         |          | `true`  | If `false`, throw an `\UnexpectedValueException` when no file matches `file_pattern` (`File(s) not found in source filesystem`) or when a file given as input does not exist (`File <path> not found in source filesystem`). If `true`, missing files are skipped |
+| `ignore_missing`         | `bool`         |          | `true`  | If `false`, throw an `UnexpectedValueException` when no file matches `file_pattern` (`File(s) not found in source filesystem`) or when a file given as input does not exist (`File <path> not found in source filesystem`). If `true`, missing files are skipped |
 
 Examples
 --------

@@ -83,3 +83,10 @@ No option can be configured under `cleverage_flysystem_process`: a key there is 
     - [SFTP stale connection on long-running processes](troubleshooting.md#sftp-long-running-process-fails-with-got-packet-type--connection-closed-prematurely)
       (`Got packet type` / `Connection closed prematurely`)
 - [CleverAge/ProcessBundle documentation](https://github.com/cleverage/process-bundle/blob/main/docs/index.md)
+
+## Exceptions
+
+The exceptions named without namespace in the reference pages (e.g. `UnexpectedValueException`) are the ones of the
+bundle, `CleverAge\FlysystemProcessBundle\Exception\*`: they extend the SPL exceptions of the same name and implement
+`CleverAge\ProcessBundle\Exception\ProcessExceptionInterface`, so that all the errors of the process bundles can be
+caught at once.

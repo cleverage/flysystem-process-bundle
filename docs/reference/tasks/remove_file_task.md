@@ -14,7 +14,7 @@ Accepted inputs
 
 * When `file_pattern` is set, the input is ignored (but the deletion is run again each time the task is executed).
 * Otherwise, `string|array<string>`: path, or list of paths, of the file(s) to delete, relative to the root of the
-  `filesystem` storage. An empty input throws an `\UnexpectedValueException` (`No pattern neither input provided for
+  `filesystem` storage. An empty input throws an `UnexpectedValueException` (`No pattern neither input provided for
   the Task`). A `StorageAttributes` output of [ListContentTask](list_content_task.md) must be converted to its `path`
   first.
 
