@@ -1,6 +1,9 @@
 Latest
 ------
 
+v3.4
+------
+
 ### Changes
 * [#84](https://github.com/cleverage/flysystem-process-bundle/issues/84) Reference pages: exceptions of the bundle.
 
