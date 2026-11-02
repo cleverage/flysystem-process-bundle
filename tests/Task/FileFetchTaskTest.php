@@ -67,11 +67,15 @@ class FileFetchTaskTest extends TestCase
 
     public function testUnknownStorageFailsAtInitialization(): void
     {
+        $this->destination->expects($this->never())->method('writeStream');
+        $this->source->expects($this->never())->method('delete');
+        $state = $this->createState('unknown');
+        $state->expects($this->never())->method('setOutput');
         $task = $this->createTask();
 
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Unknown storage "unknown" (option "destination_filesystem"), known storages: "source", "destination"');
-        $task->initialize($this->createState('unknown'));
+        $task->initialize($state);
     }
 
     public function testTaskFailsExplicitlyWhenExecutedAfterAFailedInitialization(): void
@@ -85,6 +89,8 @@ class FileFetchTaskTest extends TestCase
         }
 
         $this->destination->expects($this->never())->method('writeStream');
+        $this->source->expects($this->never())->method('delete');
+        $state->expects($this->never())->method('setOutput');
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('The storages of the task are not available: its initialization has failed, see the previous error');
         $task->execute($state);
