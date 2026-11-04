@@ -1,6 +1,9 @@
 Latest
 ------
 
+### Changes
+* [#92](https://github.com/cleverage/flysystem-process-bundle/issues/92) Documentation: the storages are configured with the format of league/flysystem-bundle 3.5 and later (the adapter being the key of its options), the `adapter` / `options` format being deprecated since flysystem-bundle 3.5; the former format is mentioned for an earlier version.
+
 v3.4
 ------
 
