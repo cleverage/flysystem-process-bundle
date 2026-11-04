@@ -89,8 +89,7 @@ passing the service id:
 flysystem:
   storages:
     remote.storage:
-      adapter: 'sftp'
-      options:
+      sftp:
         host: '%env(string:SFTP_HOST)%'
         port: '%env(int:SFTP_PORT)%'
         username: '%env(string:SFTP_USERNAME)%'

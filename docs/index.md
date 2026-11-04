@@ -45,19 +45,20 @@ The tasks of this bundle work with the Flysystem **storages** configured in `con
 flysystem:
     storages:
         local.storage: # Name of the storage, used in the task options
-            adapter: 'local'
-            options:
+            local:
                 directory: '%kernel.project_dir%/var/storage/local'
 
         remote.storage:
-            adapter: 'sftp'
-            options:
+            sftp:
                 host: '%env(string:SFTP_HOST)%'
                 port: 22
                 username: '%env(string:SFTP_USERNAME)%'
                 password: '%env(string:SFTP_PASSWORD)%'
                 root: '%env(string:SFTP_ROOT)%'
 ```
+
+This is the format of league/flysystem-bundle 3.5 and later, the adapter being the key of its options. With an
+earlier version, use `adapter: 'local'` and `options:` (deprecated since flysystem-bundle 3.5).
 
 Paths used and returned by the tasks are relative to the root of the storage (`directory` or `root` option).
 Listings (`file_pattern` options, [ListContentTask](reference/tasks/list_content_task.md)) are not recursive: to work

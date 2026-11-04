@@ -15,21 +15,18 @@ parameters:
 flysystem:
     storages:
         local.storage:
-            adapter: 'local'
-            options:
+            local:
                 directory: '%local.storage.dir%'
 
         remote.storage.incoming:
-            adapter: 'sftp'
-            options:
+            sftp:
                 host: '%env(string:SFTP_HOST)%'
                 username: '%env(string:SFTP_USERNAME)%'
                 password: '%env(string:SFTP_PASSWORD)%'
                 root: '%env(string:SFTP_ROOT)%/incoming'
 
         remote.storage.archive:
-            adapter: 'sftp'
-            options:
+            sftp:
                 host: '%env(string:SFTP_HOST)%'
                 username: '%env(string:SFTP_USERNAME)%'
                 password: '%env(string:SFTP_PASSWORD)%'
