@@ -29,9 +29,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ListContentTask extends AbstractConfigurableTask implements IterableTaskInterface
 {
     /**
-     * @var list<\League\Flysystem\StorageAttributes>|null
+     * The listing being iterated, read lazily (a huge storage is not loaded in memory).
+     *
+     * @var \Generator<int, \League\Flysystem\StorageAttributes>|null
      */
-    protected ?array $fsContent = null;
+    protected ?\Generator $fsContent = null;
 
     /**
      * @param ServiceLocator<FilesystemOperator> $storages
@@ -54,7 +56,7 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
      */
     public function execute(ProcessState $state): void
     {
-        if (null === $this->fsContent || null === key($this->fsContent)) {
+        if (!$this->fsContent instanceof \Generator || !$this->fsContent->valid()) {
             /** @var string $filesystemOption */
             $filesystemOption = $this->getOption($state, 'filesystem');
             $filesystem = $this->storages->get($filesystemOption);
@@ -64,39 +66,36 @@ class ListContentTask extends AbstractConfigurableTask implements IterableTaskIn
             $this->fsContent = $this->getFilteredFilesystemContents($filesystem, $patternOption);
         }
 
-        if (null === key($this->fsContent)) {
+        if (!$this->fsContent->valid()) {
             $state->setSkipped(true);
             $this->fsContent = null;
         } else {
-            $state->setOutput(current($this->fsContent));
+            $state->setOutput($this->fsContent->current());
         }
     }
 
     public function next(ProcessState $state): bool
     {
-        if (!\is_array($this->fsContent)) {
+        if (!$this->fsContent instanceof \Generator) {
             return false;
         }
 
-        next($this->fsContent);
+        $this->fsContent->next();
 
-        return null !== key($this->fsContent);
+        return $this->fsContent->valid();
     }
 
     /**
-     * @return list<\League\Flysystem\StorageAttributes>
+     * @return \Generator<int, \League\Flysystem\StorageAttributes>
      *
      * @throws FilesystemException
      */
-    protected function getFilteredFilesystemContents(FilesystemOperator $filesystem, ?string $pattern = null): array
+    protected function getFilteredFilesystemContents(FilesystemOperator $filesystem, ?string $pattern = null): \Generator
     {
-        $results = [];
         foreach ($filesystem->listContents('') as $item) {
             if (null === $pattern || preg_match($pattern, $item->path())) {
-                $results[] = $item;
+                yield $item;
             }
         }
-
-        return $results;
     }
 }
