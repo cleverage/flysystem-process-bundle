@@ -30,6 +30,10 @@ with `property: path` to get the path, as expected by [FileFetchTask](file_fetch
 
 When the storage is empty, or when no item matches `file_pattern`, no output is produced and the task is skipped.
 
+The listing is read item by item while the task iterates, it is not loaded in memory. Each execution of the task (for each
+input) lists the storage again. Be careful if a downstream task changes the listed directory (e.g. removing the files)
+while the iteration is in progress: with an adapter listing lazily, the iteration may then skip some items.
+
 Options
 -------
 
